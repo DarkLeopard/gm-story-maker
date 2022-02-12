@@ -1,15 +1,33 @@
-import { Component, OnInit } from '@angular/core';
+import {
+  Component,
+  Input,
+  OnInit,
+} from '@angular/core';
+import {map} from 'rxjs';
 import {ListEntityDirective} from '../../basic-classes/list-entity.directive';
 import {IChapter} from '../../interfaces/chapter.interface';
 
 @Component({
   selector: 'app-chapter-list',
   templateUrl: './chapter-list.component.html',
-  styleUrls: ['./chapter-list.component.scss']
+  styleUrls: ['./chapter-list.component.scss'],
 })
 export class ChapterListComponent extends ListEntityDirective<IChapter> implements OnInit {
-  public dataSource = this.storyStoreService.chaptersDB;
+
+  @Input() public storyId: number | undefined;
+
+  public dataSource = this.storyStoreService.chaptersDB.pipe(
+    map((chapters: IChapter[]) => chapters
+      .filter((chapter: IChapter) => chapter.storiesIds
+        .some((storyId: number) => this.storyId = storyId),
+      ),
+    ),
+  );
 
   public ngOnInit(): void {
+    if (!this.storyId) {
+      console.error('Не найден storyId');
+      this.router.navigate(['./list']);
+    }
   }
 }

@@ -11,7 +11,7 @@ import {StoryStoreService} from '../services/story-store.service';
 @Directive()
 export abstract class EditorEntityDirective<T> implements OnInit {
 
-  protected entityId: number = Number(this.activatedRoute.snapshot.paramMap.get('id')); // undefined check in router module
+  public entityId: number = Number(this.activatedRoute.snapshot.paramMap.get('id')); // undefined check in router module
   protected entity: T | undefined;
 
   constructor(

@@ -10,25 +10,35 @@ import { saveAs } from 'file-saver';
 @Injectable()
 export class StoryStoreService {
 
-  private storiesDBBS: BehaviorSubject<IStory[]> = new BehaviorSubject<IStory[]>([{ id: 1, title: '123', chaptersIds: []}]);
+  private storiesDBBS: BehaviorSubject<IStory[]> = new BehaviorSubject<IStory[]>([]);
   public storiesDB: Observable<IStory[]> = this.storiesDBBS.asObservable();
-  private chaptersDBBS: BehaviorSubject<IChapter[]> = new BehaviorSubject<IChapter[]>([{ id: 1, title: '123'}]);
+  private chaptersDBBS: BehaviorSubject<IChapter[]> = new BehaviorSubject<IChapter[]>([]);
   public chaptersDB: Observable<IChapter[]> = this.chaptersDBBS.asObservable();
 
   constructor() { }
 
   public getStory(id: number): IStory | undefined {
-    return this.storiesDBBS.value.find(((value) => value.id === id));
+    return this.storiesDBBS.value.find(((value: IStory) => value.id === id));
   }
 
   public getChapter(id: number): IChapter | undefined {
-    return this.chaptersDBBS.value.find((value) => value.id === id);
+    return this.chaptersDBBS.value.find((value: IChapter) => value.id === id);
+  }
+
+  public loadJson(file: File): void {
+    const reader: FileReader = new FileReader();
+    reader.onloadend = (e) => {
+      const file = JSON.parse(e.target?.result as string)
+      this.storiesDBBS.next(file.storiesDB);
+      this.chaptersDBBS.next(file.chaptersDB);
+    }
+    reader.readAsText(file);
   }
 
   public saveInJson(): void {
     const jsonObject = {
-      storiesDB: JSON.stringify(this.storiesDBBS.value),
-      chaptersDB: JSON.stringify(this.chaptersDBBS.value),
+      storiesDB: this.storiesDBBS.value,
+      chaptersDB: this.chaptersDBBS.value,
     }
     const blob = new Blob([JSON.stringify(jsonObject)], {type : 'application/json'});
     saveAs(blob, 'gm-stories-db.json');
