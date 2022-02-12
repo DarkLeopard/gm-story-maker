@@ -1,15 +1,16 @@
-import {
-  Directive,
-  OnInit,
-} from '@angular/core';
+import {Directive} from '@angular/core';
 import {
   ActivatedRoute,
   Router,
 } from '@angular/router';
+import {Observable} from 'rxjs';
 import {StoryStoreService} from '../services/story-store.service';
 
 @Directive()
-export abstract class EditorEntityDirective<T> implements OnInit {
+export abstract class ListEntityDirective<T> {
+
+  public displayedColumns: string[] = ['id', 'title'];
+  public abstract dataSource: Observable<T[]>;
 
   protected entityId: number = Number(this.activatedRoute.snapshot.paramMap.get('id')); // undefined check in router module
   protected entity: T | undefined;
@@ -19,13 +20,4 @@ export abstract class EditorEntityDirective<T> implements OnInit {
     protected router: Router,
     protected storyStoreService: StoryStoreService,
   ) { }
-
-  public ngOnInit(): void {
-    this.entity = this.getEntity(this.entityId);
-    if (!this.entity) {
-      this.router.navigate(['/stories/list']);
-    }
-  }
-
-  protected abstract getEntity(id: number): T | undefined;
 }
