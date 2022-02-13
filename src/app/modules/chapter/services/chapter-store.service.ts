@@ -36,7 +36,7 @@ export class ChapterStoreService {
     this.restoreAtInitStatus.complete();
   }
 
-  public createChapter(story: Omit<IChapter, 'id'> = {title: 'No name story'}): void {
+  public createChapter(story: Omit<IChapter, 'id'> = {title: 'No name story', mainTxt: '', relationsIds: []}): void {
     const currentStories: IChapter[] = this.chaptersDBBS.value;
     this.chaptersDBBS.next([
       ...currentStories,

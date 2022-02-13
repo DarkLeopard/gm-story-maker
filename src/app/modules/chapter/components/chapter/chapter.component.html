@@ -5,7 +5,10 @@
   </mat-card-header>
   <mat-card-content [formGroup]="chapter" style="display: flex; flex-direction: column">
     <mat-form-field>
-      <input [formControlName]="formFields.Title" matInput>
+      <input [formControlName]="formFields.Title" matInput placeholder="Title">
+    </mat-form-field>
+    <mat-form-field>
+      <input [formControlName]="formFields.MainTxt" matInput placeholder="Main text">
     </mat-form-field>
   </mat-card-content>
   <mat-card-actions style="display: flex; justify-content: space-between">
@@ -24,7 +27,6 @@
         </mat-option>
       </mat-autocomplete>
     </mat-form-field>
-    <!--    <button (click)="save()" mat-button>Save</button>-->
   </mat-card-actions>
 </mat-card>
 <mat-card style="margin: 20px 0" *ngIf="hasRelations(relationsDataSource$ | async)">
@@ -39,7 +41,9 @@
       </ng-container>
       <ng-container [matColumnDef]="columnsKeysEnum.Title">
         <th *matHeaderCellDef mat-header-cell>{{columnsKeysEnum.Title}}</th>
-        <td *matCellDef="let element" mat-cell>{{element.title}}</td>
+        <td *matCellDef="let element" mat-cell>
+          <span (click)="goToChapter(element.id)" style="cursor: pointer">{{element.title}}</span>
+        </td>
       </ng-container>
       <ng-container [matColumnDef]="columnsKeysEnum.Actions">
         <th *matHeaderCellDef mat-header-cell style="width: 50px"></th>
@@ -50,8 +54,7 @@
         </td>
       </ng-container>
       <tr *matHeaderRowDef="displayedColumns" mat-header-row></tr>
-      <tr *matRowDef="let row; let element columns: displayedColumns;" [routerLink]="getChapterLink(element.id)"
-          mat-row></tr>
+      <tr *matRowDef="let row; let element columns: displayedColumns;" mat-row></tr>
     </table>
   </mat-card-content>
 </mat-card>

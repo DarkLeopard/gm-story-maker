@@ -7,7 +7,9 @@
       </ng-container>
       <ng-container [matColumnDef]="columnsKeysEnum.Title">
         <th *matHeaderCellDef mat-header-cell>{{columnsKeysEnum.Title}}</th>
-        <td *matCellDef="let element" mat-cell>{{element.title}}</td>
+        <td *matCellDef="let element" mat-cell>
+          <span [routerLink]="getChapterLink(element.id)" style="cursor: pointer">{{element.title}}</span>
+        </td>
       </ng-container>
       <ng-container [matColumnDef]="columnsKeysEnum.Actions">
         <th *matHeaderCellDef mat-header-cell style="width: 50px"></th>
@@ -18,8 +20,7 @@
         </td>
       </ng-container>
       <tr *matHeaderRowDef="displayedColumns" mat-header-row></tr>
-      <tr *matRowDef="let row; let element columns: displayedColumns;" [routerLink]="getChapterLink(element.id)"
-          mat-row></tr>
+      <tr *matRowDef="let row; let element columns: displayedColumns;" mat-row></tr>
     </table>
   </mat-card-content>
   <mat-card-actions align="end">

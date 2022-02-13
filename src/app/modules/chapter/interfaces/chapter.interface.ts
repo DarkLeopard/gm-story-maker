@@ -1,5 +1,6 @@
 export interface IChapter {
   id: number;
   title: string;
-  relationsIds?: IChapter['id'][];
+  mainTxt: string;
+  relationsIds: IChapter['id'][];
 }

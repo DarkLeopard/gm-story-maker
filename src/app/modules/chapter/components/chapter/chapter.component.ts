@@ -12,10 +12,11 @@ import {
 } from '@angular/router';
 import {
   BehaviorSubject,
-  delay,
+  debounceTime,
   map,
   merge,
   Observable,
+  of,
   switchMap,
   takeUntil,
   tap,
@@ -31,6 +32,7 @@ enum FormFields {
   Title = 'title',
   Relations = 'relations',
   RelationsIds = 'relationsIds',
+  MainTxt = 'mainTxt',
 }
 
 enum DisplayedColumnsKeysEnum {
@@ -52,6 +54,7 @@ export class ChapterComponent implements OnInit {
     [FormFields.Id]: new FormControl(undefined),
     [FormFields.Title]: new FormControl(undefined),
     [FormFields.RelationsIds]: new FormControl([]),
+    [FormFields.MainTxt]: new FormControl(undefined),
   });
   public formFields: typeof FormFields = FormFields;
   public displayedColumns: string[] = [
@@ -83,7 +86,8 @@ export class ChapterComponent implements OnInit {
       this.chapter.setValue({
         [FormFields.Id]: loadedChapter.id,
         [FormFields.Title]: loadedChapter.title,
-        [FormFields.RelationsIds]: loadedChapter.relationsIds || [],
+        [FormFields.RelationsIds]: loadedChapter.relationsIds,
+        [FormFields.MainTxt]: loadedChapter.mainTxt,
       });
 
       this.relationsDataSourceBS.next(relations);
@@ -92,19 +96,10 @@ export class ChapterComponent implements OnInit {
     }
   }
 
-  private fieldsAutosaver(): void {
-    merge(this.chapter.get(FormFields.Title)?.valueChanges)
-      .pipe(
-        delay(500),
-        takeUntil(this.unsubscriber.destroy$)
-      )
-      .subscribe(() => {
-        this.save();
-      })
-  }
-
-  public getChapterLink(id: IChapter['id']): string {
-    return ChapterRoutingConstants.getChapterLink(id);
+  public goToChapter(id: IChapter['id']): void {
+    this.chapterId = id;
+    this.router.navigate([ChapterRoutingConstants.getChapterLink(id)])
+      .then(() => this.reloadComponent());
   }
 
   public createLink(id: IChapter['id']): void {
@@ -123,6 +118,20 @@ export class ChapterComponent implements OnInit {
 
   public hasRelations(chapters: IChapter[] | null): boolean {
     return !!chapters && chapters.length > 0;
+  }
+
+  private fieldsAutosaver(): void {
+    merge(
+      this.chapter.get(FormFields.Title)?.valueChanges || of(),
+      this.chapter.get(FormFields.MainTxt)?.valueChanges || of(),
+    )
+      .pipe(
+        debounceTime(1000),
+        takeUntil(this.unsubscriber.destroy$),
+      )
+      .subscribe(() => {
+        this.save();
+      });
   }
 
   private reloadComponent(): void {
