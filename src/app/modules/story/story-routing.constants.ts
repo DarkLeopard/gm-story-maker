@@ -8,14 +8,9 @@ export namespace StoryRoutingConstants {
   export function getStoryLink(id: number): string {
     return `/${getFullLink(StoryRoutingConstants.Story)}/${id}`;
   }
-
-  export function getChapterLink(id: number): string {
-    return `/${getFullLink(StoryRoutingConstants.Chapter)}/${id}`;
-  }
 }
 
 export enum StoryRoutingConstants {
-  Chapter = 'chapter',
   Story = 'story',
   List = 'list',
 }

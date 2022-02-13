@@ -21,7 +21,7 @@
       <tr mat-row *matRowDef="let row; let element columns: displayedColumns;" [routerLink]="getStoryLink(element.id)"></tr>
     </table>
   </mat-card-content>
-  <mat-card-actions>
-    <button mat-button (click)="createStory()">Add</button>
+  <mat-card-actions align="end">
+    <button mat-button (click)="createStory()">Add new story</button>
   </mat-card-actions>
 </mat-card>

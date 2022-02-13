@@ -1,5 +1,4 @@
-import {IEntity} from './entity.interface';
-
-export interface IStory extends IEntity {
-  chaptersIds?: number[];
+export interface IStory {
+  id: number;
+  title: string;
 }
