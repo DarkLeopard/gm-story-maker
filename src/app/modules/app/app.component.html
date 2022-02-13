@@ -3,6 +3,11 @@
     <div style="flex-grow: 1">
       <h1>GM Story Maker <small style="opacity: 0.5">ver 0.1</small></h1>
     </div>
+    <div style="margin: 0 20px">
+      <button mat-icon-button [matMenuTriggerFor]="saveMenu" color="primary">
+        <mat-icon>backup</mat-icon>
+      </button>
+    </div>
     <app-basic-translate-picker></app-basic-translate-picker>
   </mat-toolbar>
 </header>
@@ -10,5 +15,21 @@
   <router-outlet></router-outlet>
 </main>
 <footer>
-
 </footer>
+<!-- templates -->
+<input
+  #jsonInput
+  (change)="loadJson($event)"
+  [hidden]="true"
+  type="file"
+/>
+<mat-menu #saveMenu="matMenu">
+  <button mat-menu-item (click)="jsonInput.click()">
+    <mat-icon>file_upload</mat-icon>
+    <span>Загрузить из файла</span>
+  </button>
+  <button mat-menu-item (click)="save()">
+    <mat-icon>file_download</mat-icon>
+    <span>Скачать файл</span>
+  </button>
+</mat-menu>

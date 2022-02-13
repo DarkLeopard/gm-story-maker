@@ -4,10 +4,9 @@ import {
   BehaviorSubject,
   Observable,
 } from 'rxjs';
-import {EnumHelperStaticService} from '../../../shared/services/static/enum-helper-static.service';
+import {StorageKeys} from '../../../shared/enums/storage-keys';
+import {BrowserStorageService} from '../../../shared/services/browser-storage.service';
 import {LanguagesEnum} from '../enums/languages.enum';
-
-const LANG_LS_KEY: string = 'lang';
 
 @Injectable()
 export class ProjectTranslateService {
@@ -15,19 +14,27 @@ export class ProjectTranslateService {
   private currentLanguageBS: BehaviorSubject<LanguagesEnum> = new BehaviorSubject<LanguagesEnum>(this.getSavedLang());
   public currentLanguage: Observable<LanguagesEnum> = this.currentLanguageBS.asObservable();
 
+  private langs: Map<string, LanguagesEnum> = new Map([
+    ['russian', LanguagesEnum.russian],
+    ['english', LanguagesEnum.english],
+  ]);
+
+  private defaultLang: LanguagesEnum = LanguagesEnum.russian;
+
   constructor(
     private translateService: TranslateService,
+    private localStorageService: BrowserStorageService,
   ) {
     this.setLangsList();
 
     this.currentLanguageBS.subscribe((lang: LanguagesEnum) => {
       this.translateService.setDefaultLang(lang);
-      localStorage.setItem(LANG_LS_KEY, lang);
+      this.localStorageService.setItem(StorageKeys.Language, lang);
     });
   }
 
   public static get getStaticLang(): LanguagesEnum {
-    return localStorage.getItem(LANG_LS_KEY) as LanguagesEnum;
+    return BrowserStorageService.getItem(StorageKeys.Language) as LanguagesEnum;
   }
 
   public getAllLangs(): LanguagesEnum[] {
@@ -41,23 +48,14 @@ export class ProjectTranslateService {
   }
 
   private setLangsList(): void {
-    const langs: LanguagesEnum[] = this.getLangsFromList();
+    const langs: LanguagesEnum[] = [];
+    for (const lang of this.langs.values()) {
+      langs.push(lang);
+    }
     this.translateService.addLangs(langs);
   }
 
   private getSavedLang(): LanguagesEnum {
-    const savedLang: LanguagesEnum = ProjectTranslateService.getStaticLang;
-    if (savedLang) {
-      return savedLang;
-    } else {
-      const newLang: LanguagesEnum = this.getLangsFromList()[0];
-      this.changeLang(newLang);
-      return newLang;
-    }
-  }
-
-  private getLangsFromList(): LanguagesEnum[] {
-    const langs: LanguagesEnum[] = EnumHelperStaticService.getAllEnumKeys<LanguagesEnum>(LanguagesEnum);
-    return langs;
+    return ProjectTranslateService.getStaticLang || this.defaultLang;
   }
 }

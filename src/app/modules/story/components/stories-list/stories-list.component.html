@@ -11,11 +11,3 @@
   <tr mat-row *matRowDef="let row; let element columns: displayedColumns;" [routerLink]="'/stories/story/' + element.id"></tr>
 </table>
 
-<input
-  #jsonInput
-  (change)="load($event)"
-  [hidden]="true"
-  type="file"
-/>
-<button mat-button (click)="jsonInput.click()">Load</button>
-<button mat-button (click)="save()">Save</button>
