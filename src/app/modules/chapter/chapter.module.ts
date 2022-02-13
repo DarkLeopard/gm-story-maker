@@ -8,6 +8,7 @@ import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatIconModule} from '@angular/material/icon';
 import {MatInputModule} from '@angular/material/input';
 import {MatTableModule} from '@angular/material/table';
+import {TranslateModule} from '@ngx-translate/core';
 import {ChapterListComponent} from './components/chapter-list/chapter-list.component';
 import {ChapterComponent} from './components/chapter/chapter.component';
 import {ChapterRoutingModule} from './chapter-routing.module';
@@ -29,6 +30,7 @@ import {ChapterRoutingModule} from './chapter-routing.module';
     MatInputModule,
     ReactiveFormsModule,
     MatAutocompleteModule,
+    TranslateModule,
   ],
 })
 export class ChapterModule {}

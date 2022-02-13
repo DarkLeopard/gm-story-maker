@@ -2,5 +2,19 @@
   "LANGS_LIST": {
     "ru": "Русский",
     "en": "Английский"
+  },
+  "CHAPTER_PAGE": {
+    "TITLE": "Заголовок",
+    "ID": "ID",
+    "MAIN_TEXT": "Главный текст",
+    "RELATIONS": "Связи между главами",
+    "ADD_RELATION": "Добавить связь",
+    "ADD_RELATION_PLACEHOLDER": "Поиск по заголовку",
+    "CHAPTER": "Глава"
+  },
+  "CHAPTER_LIST_PAGE": {
+    "TITLE": "Заголовок",
+    "ID": "ID",
+    "ADD_NEW_CHAPTER": "Добавить новую главу"
   }
 }

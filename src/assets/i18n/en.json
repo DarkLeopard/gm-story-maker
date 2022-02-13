@@ -2,5 +2,19 @@
   "LANGS_LIST": {
     "ru": "Russian",
     "en": "English"
+  },
+  "CHAPTER_PAGE": {
+    "TITLE": "Title",
+    "ID": "ID",
+    "MAIN_TEXT": "Main text",
+    "RELATIONS": "Chapters relations",
+    "ADD_RELATION": "Add link",
+    "ADD_RELATION_PLACEHOLDER": "Search by title",
+    "CHAPTER": "Chapter"
+  },
+  "CHAPTER_LIST_PAGE": {
+    "TITLE": "Title",
+    "ID": "ID",
+    "ADD_NEW_CHAPTER": "Add new chapter"
   }
 }

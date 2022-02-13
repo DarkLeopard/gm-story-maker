@@ -15,6 +15,10 @@ const routes: Routes = [
     path: ChapterRoutingConstants.MAIN_ROUTE,
     loadChildren: () => import('../chapter/chapter.module').then((m) => m.ChapterModule),
   },
+  {
+    path: '**',
+    redirectTo: ChapterRoutingConstants.MAIN_ROUTE,
+  }
 ];
 
 @NgModule({

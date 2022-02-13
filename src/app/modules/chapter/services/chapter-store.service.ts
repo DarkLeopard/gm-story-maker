@@ -1,4 +1,5 @@
 import {Injectable} from '@angular/core';
+import {TranslateService} from '@ngx-translate/core';
 import {saveAs} from 'file-saver';
 import {
   BehaviorSubject,
@@ -27,6 +28,7 @@ export class ChapterStoreService {
 
   constructor(
     private browserStorageService: BrowserStorageService,
+    private translateService: TranslateService,
   ) {
     this.initStorageSaver();
   }
@@ -36,13 +38,15 @@ export class ChapterStoreService {
     this.restoreAtInitStatus.complete();
   }
 
-  public createChapter(story: Omit<IChapter, 'id'> = {title: 'No name story', mainTxt: '', relationsIds: []}): void {
+  public createChapter(story: Omit<IChapter, 'id'> = {title: '', mainTxt: '', relationsIds: []}): void {
     const currentStories: IChapter[] = this.chaptersDBBS.value;
+    const newId: number = this.findNewIdNumber(currentStories.map((story: IChapter) => story.id));
     this.chaptersDBBS.next([
       ...currentStories,
       {
         ...story,
-        id: this.findNewIdNumber(currentStories.map((story: IChapter) => story.id)),
+        id: newId,
+        title: this.translateService.instant('CHAPTER_PAGE.CHAPTER') + ' ' + newId,
       },
     ]
       .sort((a: IChapter, b: IChapter) => a.id - b.id));

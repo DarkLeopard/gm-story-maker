@@ -5,17 +5,18 @@
   </mat-card-header>
   <mat-card-content [formGroup]="chapter" style="display: flex; flex-direction: column">
     <mat-form-field>
-      <input [formControlName]="formFields.Title" matInput placeholder="Title">
+      <input [formControlName]="formFields.Title" matInput [placeholder]="'CHAPTER_PAGE.TITLE' | translate">
     </mat-form-field>
     <mat-form-field>
-      <input [formControlName]="formFields.MainTxt" matInput placeholder="Main text">
+      <input [formControlName]="formFields.MainTxt" matInput
+             [placeholder]="'CHAPTER_PAGE.MAIN_TEXT' | translate">
     </mat-form-field>
   </mat-card-content>
   <mat-card-actions style="display: flex; justify-content: space-between">
-    <mat-form-field appearance="fill">
-      <mat-label>Add relation</mat-label>
+    <mat-form-field appearance="fill" (click)="selectRelation.setValue('')">
+      <mat-label [innerHTML]="'CHAPTER_PAGE.ADD_RELATION' | translate"></mat-label>
       <input type="text"
-             placeholder="Pick chapter by title"
+             [placeholder]="'CHAPTER_PAGE.ADD_RELATION_PLACEHOLDER' | translate"
              matInput
              [formControl]="selectRelation"
              [matAutocomplete]="auto">
@@ -31,16 +32,16 @@
 </mat-card>
 <mat-card style="margin: 20px 0" *ngIf="hasRelations(relationsDataSource$ | async)">
   <mat-card-header>
-    <mat-card-title>Relations</mat-card-title>
+    <mat-card-title [innerHTML]="'CHAPTER_PAGE.RELATIONS' | translate"></mat-card-title>
   </mat-card-header>
   <mat-card-content>
     <table [dataSource]="relationsDataSource$" mat-table style="width: 100%">
       <ng-container [matColumnDef]="columnsKeysEnum.Id">
-        <th *matHeaderCellDef mat-header-cell style="width: 50px">{{columnsKeysEnum.Id}}</th>
+        <th *matHeaderCellDef mat-header-cell style="width: 50px">{{'CHAPTER_PAGE.ID' | translate}}</th>
         <td *matCellDef="let element" mat-cell style="width: 50px">{{element.id}}</td>
       </ng-container>
       <ng-container [matColumnDef]="columnsKeysEnum.Title">
-        <th *matHeaderCellDef mat-header-cell>{{columnsKeysEnum.Title}}</th>
+        <th *matHeaderCellDef mat-header-cell>{{'CHAPTER_PAGE.TITLE' | translate}}</th>
         <td *matCellDef="let element" mat-cell>
           <span (click)="goToChapter(element.id)" style="cursor: pointer">{{element.title}}</span>
         </td>

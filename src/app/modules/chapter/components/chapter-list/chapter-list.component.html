@@ -2,11 +2,11 @@
   <mat-card-content>
     <table [dataSource]="dataSource" mat-table style="width: 100%">
       <ng-container [matColumnDef]="columnsKeysEnum.Id">
-        <th *matHeaderCellDef mat-header-cell style="width: 50px">{{columnsKeysEnum.Id}}</th>
+        <th *matHeaderCellDef mat-header-cell style="width: 50px">{{'CHAPTER_LIST_PAGE.ID' | translate}}</th>
         <td *matCellDef="let element" mat-cell style="width: 50px">{{element.id}}</td>
       </ng-container>
       <ng-container [matColumnDef]="columnsKeysEnum.Title">
-        <th *matHeaderCellDef mat-header-cell>{{columnsKeysEnum.Title}}</th>
+        <th *matHeaderCellDef mat-header-cell>{{'CHAPTER_LIST_PAGE.TITLE' | translate}}</th>
         <td *matCellDef="let element" mat-cell>
           <span [routerLink]="getChapterLink(element.id)" style="cursor: pointer">{{element.title}}</span>
         </td>
@@ -24,6 +24,7 @@
     </table>
   </mat-card-content>
   <mat-card-actions align="end">
-    <button (click)="createChapter()" mat-button>Add new chapter</button>
+    <button (click)="createChapter()" mat-button [innerHTML]="'CHAPTER_LIST_PAGE.ADD_NEW_CHAPTER' | translate"
+            color="primary"></button>
   </mat-card-actions>
 </mat-card>

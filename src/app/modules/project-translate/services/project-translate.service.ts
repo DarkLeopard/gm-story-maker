@@ -19,8 +19,6 @@ export class ProjectTranslateService {
     ['english', LanguagesEnum.english],
   ]);
 
-  private defaultLang: LanguagesEnum = LanguagesEnum.russian;
-
   constructor(
     private translateService: TranslateService,
     private localStorageService: BrowserStorageService,
@@ -34,7 +32,7 @@ export class ProjectTranslateService {
   }
 
   public static get getStaticLang(): LanguagesEnum {
-    return BrowserStorageService.getItem(StorageKeys.Language) as LanguagesEnum;
+    return BrowserStorageService.getItem(StorageKeys.Language) as LanguagesEnum || LanguagesEnum.russian;
   }
 
   public getAllLangs(): LanguagesEnum[] {
@@ -56,6 +54,6 @@ export class ProjectTranslateService {
   }
 
   private getSavedLang(): LanguagesEnum {
-    return ProjectTranslateService.getStaticLang || this.defaultLang;
+    return ProjectTranslateService.getStaticLang;
   }
 }

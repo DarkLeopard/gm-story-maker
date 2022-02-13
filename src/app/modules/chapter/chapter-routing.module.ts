@@ -19,11 +19,6 @@ const routes: Routes = [
   },
   {
     path: '',
-    pathMatch: 'full',
-    redirectTo: ChapterRoutingConstants.List,
-  },
-  {
-    path: '**',
     redirectTo: ChapterRoutingConstants.List,
   },
 ];
