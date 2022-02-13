@@ -3,15 +3,16 @@ import {
   RouterModule,
   Routes,
 } from '@angular/router';
+import {StoryRoutingConstants} from '../story/story-routing.constants';
 
 const routes: Routes = [
   {
     path: '',
     pathMatch: 'full',
-    redirectTo: 'stories',
+    redirectTo: StoryRoutingConstants.MAIN_ROUTE,
   },
   {
-    path: 'stories',
+    path: StoryRoutingConstants.MAIN_ROUTE,
     loadChildren: () => import('../story/story.module').then((m) => m.StoryModule),
   },
 ];

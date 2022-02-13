@@ -6,6 +6,7 @@ import {
 import {map} from 'rxjs';
 import {ListEntityDirective} from '../../basic-classes/list-entity.directive';
 import {IChapter} from '../../interfaces/chapter.interface';
+import {StoryRoutingConstants} from '../../story-routing.constants';
 
 @Component({
   selector: 'app-chapter-list',
@@ -26,8 +27,12 @@ export class ChapterListComponent extends ListEntityDirective<IChapter> implemen
 
   public ngOnInit(): void {
     if (!this.storyId) {
-      console.error('Не найден storyId');
-      this.router.navigate(['./list']);
+      console.error('StoryId not id');
+      this.router.navigateByUrl(StoryRoutingConstants.getFullLink(StoryRoutingConstants.List));
     }
+  }
+
+  public getChapterLink(id: number): string {
+    return StoryRoutingConstants.getChapterLink(id);
   }
 }
