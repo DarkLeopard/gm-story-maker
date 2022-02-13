@@ -1,5 +1,5 @@
 export namespace ChapterRoutingConstants {
-  export const MAIN_ROUTE = 'chapter';
+  export const MAIN_ROUTE = 'chapters';
 
   export function getFullLink(route: ChapterRoutingConstants): string {
     return `/${MAIN_ROUTE}/${route}`;
