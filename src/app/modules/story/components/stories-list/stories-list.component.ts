@@ -20,5 +20,13 @@ export class StoriesListComponent extends ListEntityDirective<IStory> implements
   public getStoryLink(id: number): string {
     return StoryRoutingConstants.getStoryLink(id);
   }
+
+  public createStory(): void {
+    this.storyStoreService.createStory()
+  }
+
+  public deleteStory(id: number): void {
+    this.storyStoreService.deleteStory(id);
+  }
 }
 

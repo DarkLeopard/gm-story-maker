@@ -9,6 +9,6 @@ import {IStory} from '../../interfaces/story.interface';
 })
 export class StoryComponent extends EditorEntityDirective<IStory> implements OnInit {
   protected getEntity(id: number): IStory | undefined {
-    return this.storyStoreService.getStory(id);
+    return this.storyStoreService.readStory(id);
   }
 }

@@ -9,7 +9,7 @@ import {IChapter} from '../../interfaces/chapter.interface';
 })
 export class ChapterComponent extends EditorEntityDirective<IChapter> implements OnInit {
   protected getEntity(id: number): IChapter | undefined {
-    return this.storyStoreService.getChapter(id);
+    return this.storyStoreService.readChapter(id);
   }
 
 }

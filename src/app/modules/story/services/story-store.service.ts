@@ -41,12 +41,78 @@ export class StoryStoreService {
     this.restored.complete();
   }
 
-  public getStory(id: number): IStory | undefined {
+  public createStory(story: Omit<IStory, 'id'> = { title: 'No name story' }): void {
+    const currentStories: IStory[] = this.storiesDBBS.value;
+    this.storiesDBBS.next([
+      ...currentStories,
+      {
+        ...story,
+        id: this.findNewIdNumber(currentStories.map((story: IStory) => story.id)),
+      },
+    ]
+      .sort((a: IStory, b: IStory) => a.id - b.id));
+  }
+
+  public deleteStory(id: IStory['id']): void {
+    this.storiesDBBS.next([
+      ...this.storiesDBBS.value
+        .filter((story: IStory) => story.id !== id),
+    ]);
+  }
+
+  public readStory(id: IStory['id']): IStory | undefined {
     return this.storiesDBBS.value.find(((value: IStory) => value.id === id));
   }
 
-  public getChapter(id: number): IChapter | undefined {
-    return this.chaptersDBBS.value.find((value: IChapter) => value.id === id);
+  public updateStory(story: IStory): void {
+    return this.storiesDBBS.next([
+      ...this.storiesDBBS.value
+        .reduce((acc: IStory[], currentValue: IStory) => {
+          if (story.id === currentValue.id) {
+            acc.push(story);
+          } else {
+            acc.push(currentValue);
+          }
+          return acc;
+        }, []),
+    ]);
+  }
+
+  public createChapter(chapter: Omit<IChapter, 'id'> = { title: 'No name chapter' }): void {
+    const currentStories: IChapter[] = this.chaptersDBBS.value;
+    this.chaptersDBBS.next([
+      ...currentStories,
+      {
+        ...chapter,
+        id: this.findNewIdNumber(currentStories.map((chapter: IChapter) => chapter.id)),
+      },
+    ]
+      .sort((a: IChapter, b: IChapter) => a.id - b.id));
+  }
+
+  public deleteChapter(id: IChapter['id']): void {
+    this.chaptersDBBS.next([
+      ...this.chaptersDBBS.value
+        .filter((value: IChapter) => value.id !== id),
+    ]);
+  }
+
+  public readChapter(id: IChapter['id']): IChapter | undefined {
+    return this.chaptersDBBS.value.find(((chapter: IChapter) => chapter.id === id));
+  }
+
+  public updateChapter(chapter: IChapter): void {
+    return this.chaptersDBBS.next([
+      ...this.chaptersDBBS.value
+        .reduce((acc: IChapter[], currentValue: IChapter) => {
+          if (chapter.id === currentValue.id) {
+            acc.push(chapter);
+          } else {
+            acc.push(currentValue);
+          }
+          return acc;
+        }, []),
+    ]);
   }
 
   public userLoadJson(file: File): void {
@@ -107,6 +173,11 @@ export class StoryStoreService {
     return resultObservables;
   }
 
+  private findNewIdNumber(currentIds: number[]): number {
+    currentIds.sort((a: number, b: number) => a - b);
+    return currentIds.length > 0 ? currentIds[currentIds.length - 1] + 1 : 1;
+  }
+
   private initStorageSaver(): void {
     merge(
       this.storiesDB,
@@ -115,7 +186,7 @@ export class StoryStoreService {
       .pipe(
         skipUntil(this.restored),
       )
-      .subscribe((value) => {
+      .subscribe(() => {
         this.saveInDB()
           .subscribe();
       });

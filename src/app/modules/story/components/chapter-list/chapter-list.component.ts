@@ -19,7 +19,7 @@ export class ChapterListComponent extends ListEntityDirective<IChapter> implemen
 
   public dataSource = this.storyStoreService.chaptersDB.pipe(
     map((chapters: IChapter[]) => chapters
-      .filter((chapter: IChapter) => chapter.storiesIds
+      .filter((chapter: IChapter) => (!!chapter.storiesIds ? chapter.storiesIds : [])
         .some((storyId: number) => this.storyId = storyId),
       ),
     ),
@@ -34,5 +34,9 @@ export class ChapterListComponent extends ListEntityDirective<IChapter> implemen
 
   public getChapterLink(id: number): string {
     return StoryRoutingConstants.getChapterLink(id);
+  }
+
+  public createChapter(): void {
+    this.storyStoreService.createChapter()
   }
 }
