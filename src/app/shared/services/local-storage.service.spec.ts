@@ -1,6 +1,6 @@
-import { TestBed } from '@angular/core/testing';
+import {TestBed} from '@angular/core/testing';
 
-import { BrowserStorageService } from './browser-storage.service';
+import {BrowserStorageService} from './browser-storage.service';
 
 describe('LocalStorageService', () => {
   let service: BrowserStorageService;

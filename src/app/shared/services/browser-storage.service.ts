@@ -1,13 +1,15 @@
 import {Injectable} from '@angular/core';
-import {Observable, Subscriber} from 'rxjs';
+import * as localforage from 'localforage';
+import {
+  Observable,
+  Subscriber,
+} from 'rxjs';
 import {StorageKeys} from '../enums/storage-keys';
-import * as localforage from 'localforage'
 
 @Injectable()
 export class BrowserStorageService {
 
-  constructor(
-  ) { }
+  constructor() { }
 
   /**
    * Try not to use this method.
@@ -31,7 +33,7 @@ export class BrowserStorageService {
 
   public setItemDB<T>(key: StorageKeys, value: T): Observable<T> {
     return new Observable((subscriber: Subscriber<T>) => {
-      subscriber.next('init' as unknown as T)
+      subscriber.next('init' as unknown as T);
       localforage.setItem(key, value)
         .then((promiseResult: T) => {
           subscriber.next(promiseResult);
@@ -42,8 +44,8 @@ export class BrowserStorageService {
         })
         .finally(() => {
           subscriber.complete();
-        })
-    })
+        });
+    });
   }
 
   public getItemDB<T>(key: StorageKeys): Observable<T | null> {
@@ -57,7 +59,7 @@ export class BrowserStorageService {
         })
         .finally(() => {
           subscriber.complete();
-        })
-    })
+        });
+    });
   }
 }

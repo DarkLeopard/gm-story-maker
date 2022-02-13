@@ -18,9 +18,9 @@ import {
 import {WINDOW_PROVIDER} from '../shared/providers/window-provider';
 import {BrowserStorageService} from '../shared/services/browser-storage.service';
 import {ProjectTranslateModule} from './project-translate/project-translate.module';
-import {StoryStoreService} from './story/services/story-store.service';
+import {ChapterStoreService} from './story/services/chapter-store.service';
 
-function appInit(storyStoreService: StoryStoreService): () => Observable<unknown> | Promise<unknown> {
+function appInit(storyStoreService: ChapterStoreService): () => Observable<unknown> | Promise<unknown> {
   return () => forkJoin(storyStoreService.restoreFromDB())
     .pipe(
       tap(() => {
@@ -28,7 +28,7 @@ function appInit(storyStoreService: StoryStoreService): () => Observable<unknown
       }),
       finalize(() => {
         storyStoreService.appInitRestoreComlete();
-      })
+      }),
     );
 }
 
@@ -55,11 +55,11 @@ export class CoreModule {
       providers: [
         WINDOW_PROVIDER,
         BrowserStorageService,
-        StoryStoreService,
+        ChapterStoreService,
         {
           provide: APP_INITIALIZER,
           useFactory: appInit,
-          deps: [StoryStoreService],
+          deps: [ChapterStoreService],
           multi: true,
         },
       ],

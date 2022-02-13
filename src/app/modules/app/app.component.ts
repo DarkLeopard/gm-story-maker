@@ -1,16 +1,16 @@
-import { Component } from '@angular/core';
-import {StoryStoreService} from '../story/services/story-store.service';
+import {Component} from '@angular/core';
+import {ChapterStoreService} from '../story/services/chapter-store.service';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+  styleUrls: ['./app.component.scss'],
 })
 export class AppComponent {
   title = 'gm-story-maker';
 
   constructor(
-    protected storyStoreService: StoryStoreService,
+    private storyStoreService: ChapterStoreService,
   ) {}
 
   public loadJson(event: Event): void {

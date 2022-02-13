@@ -1,0 +1,28 @@
+<mat-card>
+  <mat-card-content>
+    <table [dataSource]="dataSource" mat-table style="width: 100%">
+      <ng-container [matColumnDef]="columnsKeysEnum.Id">
+        <th *matHeaderCellDef mat-header-cell style="width: 50px">{{columnsKeysEnum.Id}}</th>
+        <td *matCellDef="let element" mat-cell style="width: 50px">{{element.id}}</td>
+      </ng-container>
+      <ng-container [matColumnDef]="columnsKeysEnum.Title">
+        <th *matHeaderCellDef mat-header-cell>{{columnsKeysEnum.Title}}</th>
+        <td *matCellDef="let element" mat-cell>{{element.title}}</td>
+      </ng-container>
+      <ng-container [matColumnDef]="columnsKeysEnum.Actions">
+        <th *matHeaderCellDef mat-header-cell style="width: 50px"></th>
+        <td *matCellDef="let element" mat-cell style="width: 50px">
+          <button (click)="deleteChapter(element.id)" color="warn" mat-icon-button>
+            <mat-icon>delete</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+      <tr *matHeaderRowDef="displayedColumns" mat-header-row></tr>
+      <tr *matRowDef="let row; let element columns: displayedColumns;" [routerLink]="getChapterLink(element.id)"
+          mat-row></tr>
+    </table>
+  </mat-card-content>
+  <mat-card-actions align="end">
+    <button (click)="createChapter()" mat-button>Add new chapter</button>
+  </mat-card-actions>
+</mat-card>

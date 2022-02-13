@@ -1,0 +1,13 @@
+<mat-card>
+  <mat-card-content [formGroup]="chapter" style="display: flex; flex-direction: column">
+    <mat-form-field>
+      <input [formControlName]="formFields.Id" matInput>
+    </mat-form-field>
+    <mat-form-field>
+      <input [formControlName]="formFields.Title" matInput>
+    </mat-form-field>
+  </mat-card-content>
+  <mat-card-actions align="end">
+    <button (click)="save()" mat-button>Save</button>
+  </mat-card-actions>
+</mat-card>

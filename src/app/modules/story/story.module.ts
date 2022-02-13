@@ -1,18 +1,21 @@
 import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
+import {ReactiveFormsModule} from '@angular/forms';
 import {MatButtonModule} from '@angular/material/button';
 import {MatCardModule} from '@angular/material/card';
+import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatIconModule} from '@angular/material/icon';
+import {MatInputModule} from '@angular/material/input';
 import {MatTableModule} from '@angular/material/table';
-import {StoriesListComponent} from './components/stories-list/stories-list.component';
-import {StoryComponent} from './components/story/story.component';
+import {ChapterListComponent} from './components/chapter-list/chapter-list.component';
+import {ChapterComponent} from './components/chapter/chapter.component';
 import {StoryRoutingModule} from './story-routing.module';
 
 
 @NgModule({
   declarations: [
-    StoriesListComponent,
-    StoryComponent,
+    ChapterListComponent,
+    ChapterComponent,
   ],
   imports: [
     CommonModule,
@@ -21,6 +24,9 @@ import {StoryRoutingModule} from './story-routing.module';
     MatButtonModule,
     MatCardModule,
     MatIconModule,
+    MatFormFieldModule,
+    MatInputModule,
+    ReactiveFormsModule,
   ],
 })
 export class StoryModule {}

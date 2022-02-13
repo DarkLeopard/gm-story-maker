@@ -29,7 +29,7 @@ export class BasicTranslatePickerComponent implements OnInit {
     this.languageFC.valueChanges
       .subscribe((lang: LanguagesEnum) => {
         this.changeLang(lang);
-      })
+      });
   }
 
   private changeLang(lang: LanguagesEnum): void {

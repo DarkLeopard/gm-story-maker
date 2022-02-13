@@ -4,27 +4,27 @@ import {
   Routes,
 } from '@angular/router';
 import {ID_PARAM} from '../../shared/constants/common-routing.constants';
-import {StoriesListComponent} from './components/stories-list/stories-list.component';
-import {StoryComponent} from './components/story/story.component';
-import {StoryRoutingConstants} from './story-routing.constants';
+import {ChapterRoutingConstants} from './chapter-routing.constants';
+import {ChapterListComponent} from './components/chapter-list/chapter-list.component';
+import {ChapterComponent} from './components/chapter/chapter.component';
 
 const routes: Routes = [
   {
-    path: StoryRoutingConstants.List,
-    component: StoriesListComponent,
+    path: ChapterRoutingConstants.List,
+    component: ChapterListComponent,
   },
   {
-    path: `${StoryRoutingConstants.Story}/:${ID_PARAM}`,
-    component: StoryComponent,
+    path: `${ChapterRoutingConstants.Chapter}/:${ID_PARAM}`,
+    component: ChapterComponent,
   },
   {
     path: '',
     pathMatch: 'full',
-    redirectTo: StoryRoutingConstants.List,
+    redirectTo: ChapterRoutingConstants.List,
   },
   {
     path: '**',
-    redirectTo: StoryRoutingConstants.List,
+    redirectTo: ChapterRoutingConstants.List,
   },
 ];
 

@@ -1,6 +1,9 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {
+  ComponentFixture,
+  TestBed,
+} from '@angular/core/testing';
 
-import { BasicTranslatePickerComponent } from './basic-translate-picker.component';
+import {BasicTranslatePickerComponent} from './basic-translate-picker.component';
 
 describe('BasicTranslatePickerComponent', () => {
   let component: BasicTranslatePickerComponent;
@@ -8,9 +11,9 @@ describe('BasicTranslatePickerComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ BasicTranslatePickerComponent ]
+      declarations: [BasicTranslatePickerComponent],
     })
-    .compileComponents();
+      .compileComponents();
   });
 
   beforeEach(() => {

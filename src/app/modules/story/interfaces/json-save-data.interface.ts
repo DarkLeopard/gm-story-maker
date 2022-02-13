@@ -1,5 +1,5 @@
-import {IStory} from './story.interface';
+import {IChapter} from './story.interface';
 
 export interface ISavedData {
-  storiesDB: IStory[];
+  storiesDB: IChapter[];
 }

@@ -1,4 +1,4 @@
-export interface IStory {
+export interface IChapter {
   id: number;
   title: string;
 }

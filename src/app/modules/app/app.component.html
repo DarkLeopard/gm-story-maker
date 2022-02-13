@@ -1,10 +1,10 @@
 <header>
   <mat-toolbar>
     <div style="flex-grow: 1">
-      <h1>GM Story Maker <small style="opacity: 0.5">ver 0.1</small></h1>
+      <h1 routerLink="./" style="cursor: pointer">GM Story Maker <small style="opacity: 0.5">ver 0.1</small></h1>
     </div>
     <div style="margin: 0 20px">
-      <button mat-icon-button [matMenuTriggerFor]="saveMenu" color="primary">
+      <button [matMenuTriggerFor]="saveMenu" color="primary" mat-icon-button>
         <mat-icon>backup</mat-icon>
       </button>
     </div>
@@ -24,11 +24,11 @@
   type="file"
 />
 <mat-menu #saveMenu="matMenu">
-  <button mat-menu-item (click)="jsonInput.click()">
+  <button (click)="jsonInput.click()" mat-menu-item>
     <mat-icon>file_upload</mat-icon>
     <span>Загрузить из файла</span>
   </button>
-  <button mat-menu-item (click)="save()">
+  <button (click)="save()" mat-menu-item>
     <mat-icon>file_download</mat-icon>
     <span>Скачать файл</span>
   </button>

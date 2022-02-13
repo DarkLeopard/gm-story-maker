@@ -14,13 +14,13 @@ import {
 import {StorageKeys} from '../../../shared/enums/storage-keys';
 import {BrowserStorageService} from '../../../shared/services/browser-storage.service';
 import {ISavedData} from '../interfaces/json-save-data.interface';
-import {IStory} from '../interfaces/story.interface';
+import {IChapter} from '../interfaces/story.interface';
 
 @Injectable()
-export class StoryStoreService {
+export class ChapterStoreService {
 
-  private storiesDBBS: BehaviorSubject<IStory[]> = new BehaviorSubject<IStory[]>([]);
-  public storiesDB: Observable<IStory[]> = this.storiesDBBS.asObservable();
+  private storiesDBBS: BehaviorSubject<IChapter[]> = new BehaviorSubject<IChapter[]>([]);
+  public storiesDB: Observable<IChapter[]> = this.storiesDBBS.asObservable();
 
   private restoreAtInitStatus: Subject<void> = new Subject<void>();
   private jsonFileName: string = 'gm-stories-db.json';
@@ -36,33 +36,33 @@ export class StoryStoreService {
     this.restoreAtInitStatus.complete();
   }
 
-  public createStory(story: Omit<IStory, 'id'> = {title: 'No name story'}): void {
-    const currentStories: IStory[] = this.storiesDBBS.value;
+  public createChapter(story: Omit<IChapter, 'id'> = {title: 'No name story'}): void {
+    const currentStories: IChapter[] = this.storiesDBBS.value;
     this.storiesDBBS.next([
       ...currentStories,
       {
         ...story,
-        id: this.findNewIdNumber(currentStories.map((story: IStory) => story.id)),
+        id: this.findNewIdNumber(currentStories.map((story: IChapter) => story.id)),
       },
     ]
-      .sort((a: IStory, b: IStory) => a.id - b.id));
+      .sort((a: IChapter, b: IChapter) => a.id - b.id));
   }
 
-  public deleteStory(id: IStory['id']): void {
+  public deleteChapter(id: IChapter['id']): void {
     this.storiesDBBS.next([
       ...this.storiesDBBS.value
-        .filter((story: IStory) => story.id !== id),
+        .filter((story: IChapter) => story.id !== id),
     ]);
   }
 
-  public readStory(id: IStory['id']): IStory | undefined {
-    return this.storiesDBBS.value.find(((value: IStory) => value.id === id));
+  public readChapter(id: IChapter['id']): IChapter | undefined {
+    return this.storiesDBBS.value.find(((value: IChapter) => value.id === id));
   }
 
-  public updateStory(story: IStory): void {
+  public updateChapter(story: IChapter): void {
     return this.storiesDBBS.next([
       ...this.storiesDBBS.value
-        .reduce((acc: IStory[], currentValue: IStory) => {
+        .reduce((acc: IChapter[], currentValue: IChapter) => {
           if (story.id === currentValue.id) {
             acc.push(story);
           } else {
@@ -102,9 +102,9 @@ export class StoryStoreService {
   }
 
   public restoreFromDB(): Observable<void> {
-    return this.browserStorageService.getItemDB<IStory[]>(StorageKeys.Stories)
+    return this.browserStorageService.getItemDB<IChapter[]>(StorageKeys.Stories)
       .pipe(
-        tap((value: IStory[] | null) => {
+        tap((value: IChapter[] | null) => {
           this.storiesDBBS.next(value || []);
           if (!value) {
             console.warn('No data in storage: ', StorageKeys.Stories);
