@@ -9,7 +9,7 @@ import {MatInputModule} from '@angular/material/input';
 import {MatTableModule} from '@angular/material/table';
 import {ChapterListComponent} from './components/chapter-list/chapter-list.component';
 import {ChapterComponent} from './components/chapter/chapter.component';
-import {StoryRoutingModule} from './story-routing.module';
+import {ChapterRoutingModule} from './chapter-routing.module';
 
 
 @NgModule({
@@ -19,7 +19,7 @@ import {StoryRoutingModule} from './story-routing.module';
   ],
   imports: [
     CommonModule,
-    StoryRoutingModule,
+    ChapterRoutingModule,
     MatTableModule,
     MatButtonModule,
     MatCardModule,
@@ -29,4 +29,4 @@ import {StoryRoutingModule} from './story-routing.module';
     ReactiveFormsModule,
   ],
 })
-export class StoryModule {}
+export class ChapterModule {}

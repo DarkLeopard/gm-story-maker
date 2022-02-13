@@ -14,7 +14,7 @@ import {
 import {StorageKeys} from '../../../shared/enums/storage-keys';
 import {BrowserStorageService} from '../../../shared/services/browser-storage.service';
 import {ISavedData} from '../interfaces/json-save-data.interface';
-import {IChapter} from '../interfaces/story.interface';
+import {IChapter} from '../interfaces/chapter.interface';
 
 @Injectable()
 export class ChapterStoreService {

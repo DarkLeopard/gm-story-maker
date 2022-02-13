@@ -12,7 +12,7 @@ import {
 } from '@angular/router';
 import {ID_PARAM} from '../../../../shared/constants/common-routing.constants';
 import {ChapterRoutingConstants} from '../../chapter-routing.constants';
-import {IChapter} from '../../interfaces/story.interface';
+import {IChapter} from '../../interfaces/chapter.interface';
 import {ChapterStoreService} from '../../services/chapter-store.service';
 
 enum FormFields {

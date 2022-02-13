@@ -1,5 +1,5 @@
 import {Component} from '@angular/core';
-import {ChapterStoreService} from '../story/services/chapter-store.service';
+import {ChapterStoreService} from '../chapter/services/chapter-store.service';
 
 @Component({
   selector: 'app-root',

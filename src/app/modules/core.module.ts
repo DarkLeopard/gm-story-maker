@@ -18,7 +18,7 @@ import {
 import {WINDOW_PROVIDER} from '../shared/providers/window-provider';
 import {BrowserStorageService} from '../shared/services/browser-storage.service';
 import {ProjectTranslateModule} from './project-translate/project-translate.module';
-import {ChapterStoreService} from './story/services/chapter-store.service';
+import {ChapterStoreService} from './chapter/services/chapter-store.service';
 
 function appInit(storyStoreService: ChapterStoreService): () => Observable<unknown> | Promise<unknown> {
   return () => forkJoin(storyStoreService.restoreFromDB())
