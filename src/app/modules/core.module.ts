@@ -15,6 +15,7 @@ import {
   Observable,
   tap,
 } from 'rxjs';
+import {NgxsStoreModule} from '../../store/store.module';
 import {WINDOW_PROVIDER} from '../shared/providers/window-provider';
 import {BrowserStorageService} from '../shared/services/browser-storage.service';
 import {ProjectTranslateModule} from './project-translate/project-translate.module';
@@ -40,6 +41,7 @@ function appInit(storyStoreService: ChapterStoreService): () => Observable<unkno
     BrowserAnimationsModule,
     HttpClientModule,
     ProjectTranslateModule,
+    NgxsStoreModule,
   ],
 })
 export class CoreModule {
