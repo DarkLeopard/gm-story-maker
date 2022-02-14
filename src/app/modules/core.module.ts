@@ -9,28 +9,18 @@ import {
 } from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import {Store} from '@ngxs/store';
 import {
-  finalize,
   forkJoin,
   Observable,
-  tap,
 } from 'rxjs';
-import {NgxsStoreModule} from '../../store/store.module';
 import {WINDOW_PROVIDER} from '../shared/providers/window-provider';
-import {BrowserStorageService} from '../shared/services/browser-storage.service';
-import {ProjectTranslateModule} from './project-translate/project-translate.module';
+import {IndexDBActions} from '../store/local-db/states/indexdb/indexdb-storage.actions';
+import {NgxsStoreModule} from '../store/store.module';
 import {ChapterStoreService} from './chapter/services/chapter-store.service';
 
-function appInit(storyStoreService: ChapterStoreService): () => Observable<unknown> | Promise<unknown> {
-  return () => forkJoin(storyStoreService.restoreFromDB())
-    .pipe(
-      tap(() => {
-        console.log('app inited');
-      }),
-      finalize(() => {
-        storyStoreService.appInitRestoreComlete();
-      }),
-    );
+function appInit(storyStoreService: ChapterStoreService, store: Store): () => Observable<unknown> | Promise<unknown> {
+  return () => forkJoin(store.dispatch(new IndexDBActions.Restore()));
 }
 
 @NgModule({
@@ -40,7 +30,6 @@ function appInit(storyStoreService: ChapterStoreService): () => Observable<unkno
     BrowserModule,
     BrowserAnimationsModule,
     HttpClientModule,
-    ProjectTranslateModule,
     NgxsStoreModule,
   ],
 })
@@ -56,12 +45,11 @@ export class CoreModule {
       ngModule: CoreModule,
       providers: [
         WINDOW_PROVIDER,
-        BrowserStorageService,
         ChapterStoreService,
         {
           provide: APP_INITIALIZER,
           useFactory: appInit,
-          deps: [ChapterStoreService],
+          deps: [ChapterStoreService, Store],
           multi: true,
         },
       ],

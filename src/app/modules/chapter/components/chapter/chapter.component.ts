@@ -10,6 +10,7 @@ import {
   ActivatedRoute,
   Router,
 } from '@angular/router';
+import {Store} from '@ngxs/store';
 import {
   BehaviorSubject,
   debounceTime,
@@ -23,8 +24,9 @@ import {
 } from 'rxjs';
 import {ID_PARAM} from '../../../../shared/constants/common-routing.constants';
 import {Unsubscriber} from '../../../../shared/services/unsubscriber.service';
+import {ChaptersState} from '../../../../store/local-db/states/chapters/chapters.state';
 import {ChapterRoutingConstants} from '../../chapter-routing.constants';
-import {IChapter} from '../../interfaces/chapter.interface';
+import {IChapter} from '../../../../shared/models/chapter/chapter.interface';
 import {ChapterStoreService} from '../../services/chapter-store.service';
 
 enum FormFields {
@@ -74,10 +76,11 @@ export class ChapterComponent implements OnInit {
     private router: Router,
     private chapterStoreService: ChapterStoreService,
     private unsubscriber: Unsubscriber,
+    private store: Store,
   ) { }
 
   public ngOnInit() {
-    const loadedChapter: IChapter | undefined = this.readChapter(this.chapterId);
+    const loadedChapter: IChapter | undefined = this.store.selectSnapshot(ChaptersState.chapter(this.chapterId));
     if (!loadedChapter) {
       this.router.navigateByUrl(ChapterRoutingConstants.getFullLink(ChapterRoutingConstants.List));
     } else {
@@ -113,7 +116,7 @@ export class ChapterComponent implements OnInit {
   }
 
   public save(): void {
-    this.chapterStoreService.updateChapter(this.chapter.getRawValue());
+    this.chapterStoreService.updateChapter(this.chapter.getRawValue()).subscribe();
   }
 
   public hasRelations(chapters: IChapter[] | null): boolean {
@@ -170,14 +173,10 @@ export class ChapterComponent implements OnInit {
       .subscribe();
   }
 
-  private readChapter(id: number): IChapter | undefined {
-    return this.chapterStoreService.readChapter(id);
-  }
-
   private readRelations(relationsIds: IChapter['relationsIds']): IChapter[] {
     const result: IChapter[] = [];
     relationsIds?.forEach((chapterId: number) => {
-      const readedChapter: IChapter | undefined = this.chapterStoreService.readChapter(chapterId);
+      const readedChapter: IChapter | undefined = this.store.selectSnapshot(ChaptersState.chapter(chapterId));
       if (readedChapter) {
         result.push(readedChapter);
       }

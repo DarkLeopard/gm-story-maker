@@ -1,4 +1,7 @@
 export enum StorageKeys {
-  Language = 'language',
   Chapters = 'chapters',
+}
+
+export enum LocalStorageKeys {
+  Language = 'language',
 }

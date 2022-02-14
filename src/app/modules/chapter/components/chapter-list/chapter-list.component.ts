@@ -1,6 +1,6 @@
 import {Component} from '@angular/core';
 import {ChapterRoutingConstants} from '../../chapter-routing.constants';
-import {IChapter} from '../../interfaces/chapter.interface';
+import {IChapter} from '../../../../shared/models/chapter/chapter.interface';
 import {ChapterStoreService} from '../../services/chapter-store.service';
 
 enum DisplayedColumnsKeysEnum {
@@ -33,11 +33,13 @@ export class ChapterListComponent {
   }
 
   public createChapter(): void {
-    this.storyStoreService.createChapter();
+    this.storyStoreService.createChapter()
+      .subscribe();
   }
 
   public deleteChapter(id: IChapter['id']): void {
-    this.storyStoreService.deleteChapter(id);
+    this.storyStoreService.deleteChapter(id)
+      .subscribe();
   }
 }
 

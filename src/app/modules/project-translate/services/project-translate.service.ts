@@ -1,11 +1,13 @@
 import {Injectable} from '@angular/core';
 import {TranslateService} from '@ngx-translate/core';
+import {Store} from '@ngxs/store';
 import {
   BehaviorSubject,
   Observable,
 } from 'rxjs';
-import {StorageKeys} from '../../../shared/enums/storage-keys';
-import {BrowserStorageService} from '../../../shared/services/browser-storage.service';
+import {LocalStorageKeys} from '../../../shared/enums/storage-keys';
+import {LocalStorageActions} from '../../../store/local-db/states/local-storage/local-storage.actions';
+import {LocalStorageState} from '../../../store/local-db/states/local-storage/local-storage.state';
 import {LanguagesEnum} from '../enums/languages.enum';
 
 @Injectable()
@@ -21,18 +23,18 @@ export class ProjectTranslateService {
 
   constructor(
     private translateService: TranslateService,
-    private localStorageService: BrowserStorageService,
+    private store: Store,
   ) {
     this.setLangsList();
 
     this.currentLanguageBS.subscribe((lang: LanguagesEnum) => {
       this.translateService.setDefaultLang(lang);
-      this.localStorageService.setItem(StorageKeys.Language, lang);
+      this.store.dispatch(new LocalStorageActions.SetItem(LocalStorageKeys.Language, lang));
     });
   }
 
   public static get getStaticLang(): LanguagesEnum {
-    return BrowserStorageService.getItem(StorageKeys.Language) as LanguagesEnum || LanguagesEnum.russian;
+    return LocalStorageState.getItem(LocalStorageKeys.Language) as LanguagesEnum || LanguagesEnum.russian;
   }
 
   public getAllLangs(): LanguagesEnum[] {

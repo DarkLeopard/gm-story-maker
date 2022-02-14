@@ -1,98 +1,56 @@
 import {Injectable} from '@angular/core';
 import {TranslateService} from '@ngx-translate/core';
-import { Select } from '@ngxs/store';
+import {
+  Select,
+  Store,
+} from '@ngxs/store';
 import {saveAs} from 'file-saver';
 import {
   BehaviorSubject,
-  catchError,
   forkJoin,
-  map,
   merge,
   Observable,
   skipUntil,
-  Subject,
-  tap,
+  switchMapTo,
 } from 'rxjs';
-import {IndexDBState} from '../../../../store/local-db/states/index-db/index-db.state';
 import {StorageKeys} from '../../../shared/enums/storage-keys';
-import {BrowserStorageService} from '../../../shared/services/browser-storage.service';
-import {IChapter} from '../interfaces/chapter.interface';
-import {ISavedData} from '../interfaces/json-save-data.interface';
+import {undefined$} from '../../../shared/functions/void-observable';
+import {IChapter} from '../../../shared/models/chapter/chapter.interface';
+import {ChaptersActions} from '../../../store/local-db/states/chapters/chapters.actions';
+import {ChaptersState} from '../../../store/local-db/states/chapters/chapters.state';
+import {IndexDBActions} from '../../../store/local-db/states/indexdb/indexdb-storage.actions';
+import {IndexDBState} from '../../../store/local-db/states/indexdb/indexdb-storage.state';
 
 @Injectable()
 export class ChapterStoreService {
 
-  private chaptersDBBS: BehaviorSubject<IChapter[]> = new BehaviorSubject<IChapter[]>([]);
+  @Select(ChaptersState.readChapters)
+  public chaptersDB!: Observable<IChapter[]>;
 
-  @Select(IndexDBState.readChapters)
-  public chaptersDB: Observable<IChapter[]>;
-
-  private restoreAtInitStatus: Subject<void> = new Subject<void>();
-  private jsonFileName: string = 'gm-stories-db.json';
+  @Select(IndexDBState.getRestoreAtInitStatus)
+  public restoreAtInitStatus!: Observable<boolean>;
 
   constructor(
-    private browserStorageService: BrowserStorageService,
     private translateService: TranslateService,
+    private store: Store,
   ) {
-    this.initStorageSaver();
   }
 
-  public appInitRestoreComlete(): void {
-    this.restoreAtInitStatus.next();
-    this.restoreAtInitStatus.complete();
+  public createChapter(story: Omit<IChapter, 'id'> = {title: '', mainTxt: '', relationsIds: []}): Observable<void> {
+    return this.store.dispatch(new ChaptersActions.Create(story));
   }
 
-  public createChapter(story: Omit<IChapter, 'id'> = {title: '', mainTxt: '', relationsIds: []}): void {
-    const currentStories: IChapter[] = this.chaptersDBBS.value;
-    const newId: number = this.findNewIdNumber(currentStories.map((story: IChapter) => story.id));
-    this.chaptersDBBS.next([
-      ...currentStories,
-      {
-        ...story,
-        id: newId,
-        title: this.translateService.instant('CHAPTER_PAGE.CHAPTER') + ' ' + newId,
-      },
-    ]
-      .sort((a: IChapter, b: IChapter) => a.id - b.id));
+  public deleteChapter(id: IChapter['id']): Observable<void> {
+    return this.store.dispatch(new ChaptersActions.Delete(id));
   }
 
-  public deleteChapter(id: IChapter['id']): void {
-    this.chaptersDBBS.next([
-      ...this.chaptersDBBS.value
-        .filter((story: IChapter) => story.id !== id),
-    ]);
-  }
-
-  public readChapter(id: IChapter['id']): IChapter | undefined {
-    return this.chaptersDBBS.value.find(((value: IChapter) => value.id === id));
-  }
-
-  public updateChapter(story: IChapter): void {
-    return this.chaptersDBBS.next([
-      ...this.chaptersDBBS.value
-        .reduce((acc: IChapter[], currentValue: IChapter) => {
-          if (story.id === currentValue.id) {
-            acc.push(story);
-          } else {
-            acc.push(currentValue);
-          }
-          return acc;
-        }, []),
-    ]);
-  }
-
-  public userLoadJson(file: File): void {
-    const reader: FileReader = new FileReader();
-    reader.onloadend = (event: ProgressEvent<FileReader>) => {
-      const file: ISavedData = JSON.parse(event.target?.result as string);
-      this.chaptersDBBS.next(file.storiesDB);
-    };
-    reader.readAsText(file);
+  public updateChapter(chapter: IChapter): Observable<void> {
+    return this.store.dispatch(new ChaptersActions.Update(chapter));
   }
 
   public deleteLinkFromChapter(chapterId1: IChapter['id'], chapterId2: IChapter['id']): void {
-    const chapter1: IChapter | undefined = this.readChapter(chapterId1);
-    const chapter2: IChapter | undefined = this.readChapter(chapterId2);
+    const chapter1: IChapter | undefined = this.store.selectSnapshot(ChaptersState.chapter(chapterId1));
+    const chapter2: IChapter | undefined = this.store.selectSnapshot(ChaptersState.chapter(chapterId2));
 
     if (chapter1 && chapter2) {
       const chapter1Relations = chapter1.relationsIds || [];
@@ -101,16 +59,16 @@ export class ChapterStoreService {
       chapter1.relationsIds = chapter1Relations.filter((chapterRelation1: number) => chapterRelation1 !== chapterId2);
       chapter2.relationsIds = chapter2Relations.filter((chapterRelation2: number) => chapterRelation2 !== chapterId1);
 
-      this.updateChapter(chapter1);
-      this.updateChapter(chapter2);
+      this.updateChapter(chapter1).subscribe();
+      this.updateChapter(chapter2).subscribe();
     } else {
       console.error('No chapter to delete link.', chapter1, chapter2);
     }
   }
 
   public addLinkToChapter(chapterId1: IChapter['id'], chapterId2: IChapter['id']): void {
-    const chapter1: IChapter | undefined = this.readChapter(chapterId1);
-    const chapter2: IChapter | undefined = this.readChapter(chapterId2);
+    const chapter1: IChapter | undefined = this.store.selectSnapshot(ChaptersState.chapter(chapterId1));
+    const chapter2: IChapter | undefined = this.store.selectSnapshot(ChaptersState.chapter(chapterId2));
     if (chapter1 && chapter2) {
       const chapter1Relations = chapter1.relationsIds || [];
       const chapter2Relations = chapter2.relationsIds || [];
@@ -131,55 +89,23 @@ export class ChapterStoreService {
         console.warn('DEV_ERROR: Chapter 2 link error.');
       }
 
-      this.updateChapter(chapter1);
-      this.updateChapter(chapter2);
+      this.updateChapter(chapter1).subscribe();
+      this.updateChapter(chapter2).subscribe();
     } else {
       console.error('No chapter to link.', chapter1, chapter2);
     }
   }
 
-  public userSaveJson(value?: ISavedData): void {
-    if (!value) {
-      value = {
-        storiesDB: this.chaptersDBBS.value,
-      };
-    }
-    const blob = new Blob([JSON.stringify(value)], {type: 'application/json'});
-    saveAs(blob, this.jsonFileName);
-  }
-
   public saveInDB(): Observable<void> {
     return forkJoin(
-      this.browserStorageService.setItemDB(StorageKeys.Chapters, this.chaptersDBBS.value),
+      this.store.dispatch(new IndexDBActions.SetItem(StorageKeys.Chapters, this.store.selectSnapshot(ChaptersState.readChapters))),
     )
       .pipe(
-        map(() => undefined),
+        switchMapTo(undefined$()),
       );
   }
 
-  public restoreFromDB(): Observable<void> {
-    return this.browserStorageService.getItemDB<IChapter[]>(StorageKeys.Chapters)
-      .pipe(
-        tap((value: IChapter[] | null) => {
-          this.chaptersDBBS.next(value || []);
-          if (!value) {
-            console.warn('No data in storage: ', StorageKeys.Chapters);
-          }
-        }),
-        map(() => undefined),
-        catchError((error, caught) => {
-          console.error('Error from storage DB', error);
-          return caught;
-        }),
-      );
-  }
-
-  private findNewIdNumber(currentIds: number[]): number {
-    currentIds.sort((a: number, b: number) => a - b);
-    return currentIds.length > 0 ? currentIds[currentIds.length - 1] + 1 : 1;
-  }
-
-  private initStorageSaver(): void {
+  public initStorageSaver(): void {
     merge(
       this.chaptersDB,
     )
