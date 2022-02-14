@@ -1,5 +1,6 @@
 import {Injectable} from '@angular/core';
 import {TranslateService} from '@ngx-translate/core';
+import { Select } from '@ngxs/store';
 import {saveAs} from 'file-saver';
 import {
   BehaviorSubject,
@@ -12,6 +13,7 @@ import {
   Subject,
   tap,
 } from 'rxjs';
+import {IndexDBState} from '../../../../store/local-db/states/index-db/index-db.state';
 import {StorageKeys} from '../../../shared/enums/storage-keys';
 import {BrowserStorageService} from '../../../shared/services/browser-storage.service';
 import {IChapter} from '../interfaces/chapter.interface';
@@ -21,7 +23,9 @@ import {ISavedData} from '../interfaces/json-save-data.interface';
 export class ChapterStoreService {
 
   private chaptersDBBS: BehaviorSubject<IChapter[]> = new BehaviorSubject<IChapter[]>([]);
-  public chaptersDB: Observable<IChapter[]> = this.chaptersDBBS.asObservable();
+
+  @Select(IndexDBState.readChapters)
+  public chaptersDB: Observable<IChapter[]>;
 
   private restoreAtInitStatus: Subject<void> = new Subject<void>();
   private jsonFileName: string = 'gm-stories-db.json';

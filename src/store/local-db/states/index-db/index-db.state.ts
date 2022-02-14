@@ -1,14 +1,21 @@
 import {
+  Action,
   Selector,
   State,
+  StateContext,
 } from '@ngxs/store';
+import {Observable} from 'rxjs';
+import {IChapter} from '../../../../app/modules/chapter/interfaces/chapter.interface';
+import {IndexDBActions} from './index-db.actions';
 
 export interface IndexDBStateModel {
-
+  chapters: IChapter[];
 }
 
 const getDefaults: () => IndexDBStateModel = () => {
-  return {};
+  return {
+    chapters: [],
+  };
 };
 
 @State<IndexDBStateModel>({
@@ -17,8 +24,8 @@ const getDefaults: () => IndexDBStateModel = () => {
 })
 export class IndexDBState {
   @Selector()
-  public static getState(state: IndexDBStateModel): IndexDBStateModel {
-    return IndexDBState.getInstanceState(state);
+  public static readChapters(state: IndexDBStateModel): IChapter[] {
+    return IndexDBState.getInstanceState(state).chapters;
   }
 
   private static setInstanceState(state: IndexDBStateModel): IndexDBStateModel {
@@ -27,5 +34,15 @@ export class IndexDBState {
 
   private static getInstanceState(state: IndexDBStateModel): IndexDBStateModel {
     return {...state};
+  }
+
+  @Action(IndexDBActions.UpdateChapter)
+  public updateChapters(context: StateContext<IndexDBStateModel>, {chapter}: IndexDBActions.UpdateChapter): Observable<void> {
+    const chapters: IChapter[] = IndexDBState.getInstanceState()
+  }
+
+  @Action(IndexDBActions.UpdateChapters)
+  public updateChapters(context: StateContext<IndexDBStateModel>, {chapters}: IndexDBActions.UpdateChapters): Observable<void> {
+    IndexDBState.setInstanceState({chapters});
   }
 }
