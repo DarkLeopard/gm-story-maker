@@ -16,10 +16,10 @@ import {
 import {StorageKeys} from '../../../shared/enums/storage-keys';
 import {undefined$} from '../../../shared/functions/void-observable';
 import {IChapter} from '../../../shared/models/chapter/chapter.interface';
-import {ChaptersActions} from '../../../store/local-db/states/chapters/chapters.actions';
-import {ChaptersState} from '../../../store/local-db/states/chapters/chapters.state';
-import {IndexDBActions} from '../../../store/local-db/states/indexdb/indexdb-storage.actions';
-import {IndexDBState} from '../../../store/local-db/states/indexdb/indexdb-storage.state';
+import {ChaptersActions} from '../../../store/models/chapters/chapters.actions';
+import {ChaptersState} from '../../../store/models/chapters/chapters.state';
+import {IndexDBActions} from '../../../store/database/states/indexdb/indexdb-storage.actions';
+import {IndexDBState} from '../../../store/database/states/indexdb/indexdb-storage.state';
 
 @Injectable()
 export class ChapterStoreService {

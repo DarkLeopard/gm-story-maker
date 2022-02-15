@@ -16,7 +16,7 @@ import {
 import {StorageKeys} from '../../../../shared/enums/storage-keys';
 import {undefined$} from '../../../../shared/functions/void-observable';
 import {IChapter} from '../../../../shared/models/chapter/chapter.interface';
-import {ChaptersActions} from '../chapters/chapters.actions';
+import {ChaptersActions} from '../../../models/chapters/chapters.actions';
 import {IndexDBActions} from './indexdb-storage.actions';
 
 export interface IndexDBStateModel {

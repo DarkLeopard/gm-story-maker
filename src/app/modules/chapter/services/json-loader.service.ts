@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import {Store} from '@ngxs/store';
 import {saveAs} from 'file-saver';
-import {ChaptersActions} from '../../../store/local-db/states/chapters/chapters.actions';
-import {ChaptersState} from '../../../store/local-db/states/chapters/chapters.state';
+import {ChaptersActions} from '../../../store/models/chapters/chapters.actions';
+import {ChaptersState} from '../../../store/models/chapters/chapters.state';
 import {ISavedData} from '../interfaces/json-save-data.interface';
 
 @Injectable()

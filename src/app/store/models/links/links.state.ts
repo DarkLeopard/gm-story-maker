@@ -6,9 +6,9 @@ import {
 } from '@ngxs/store';
 import {Observable} from 'rxjs';
 import {ILink} from 'src/app/shared/models/links/links.interface';
-import {undefined$} from '../../../../shared/functions/void-observable';
-import {BasicCrud} from '../../../shared/basic/basic-crud';
-import {BasicModelStateInterface} from '../../../shared/basic/basic-model-state.interface';
+import {undefined$} from '../../../shared/functions/void-observable';
+import {BasicCrud} from '../../shared/basic/basic-crud';
+import {BasicModelStateInterface} from '../../shared/basic/basic-model-state.interface';
 import {LinksActions} from './links.actions';
 
 export interface LinksStateModel extends BasicModelStateInterface<ILink> {

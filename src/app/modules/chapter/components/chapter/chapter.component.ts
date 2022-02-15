@@ -24,7 +24,7 @@ import {
 } from 'rxjs';
 import {ID_PARAM} from '../../../../shared/constants/common-routing.constants';
 import {Unsubscriber} from '../../../../shared/services/unsubscriber.service';
-import {ChaptersState} from '../../../../store/local-db/states/chapters/chapters.state';
+import {ChaptersState} from '../../../../store/models/chapters/chapters.state';
 import {ChapterRoutingConstants} from '../../chapter-routing.constants';
 import {IChapter} from '../../../../shared/models/chapter/chapter.interface';
 import {ChapterStoreService} from '../../services/chapter-store.service';

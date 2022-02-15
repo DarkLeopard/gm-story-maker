@@ -1,4 +1,4 @@
-import {ILink} from '../../../../shared/models/links/links.interface';
+import {ILink} from '../../../shared/models/links/links.interface';
 
 export namespace LinksActions {
 

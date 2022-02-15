@@ -6,8 +6,8 @@ import {
   Observable,
 } from 'rxjs';
 import {LocalStorageKeys} from '../../../shared/enums/storage-keys';
-import {LocalStorageActions} from '../../../store/local-db/states/local-storage/local-storage.actions';
-import {LocalStorageState} from '../../../store/local-db/states/local-storage/local-storage.state';
+import {LocalStorageActions} from '../../../store/database/states/local-storage/local-storage.actions';
+import {LocalStorageState} from '../../../store/database/states/local-storage/local-storage.state';
 import {LanguagesEnum} from '../enums/languages.enum';
 
 @Injectable()

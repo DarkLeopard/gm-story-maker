@@ -15,7 +15,7 @@ import {
   Observable,
 } from 'rxjs';
 import {WINDOW_PROVIDER} from '../shared/providers/window-provider';
-import {IndexDBActions} from '../store/local-db/states/indexdb/indexdb-storage.actions';
+import {IndexDBActions} from '../store/database/states/indexdb/indexdb-storage.actions';
 import {NgxsStoreModule} from '../store/store.module';
 import {ChapterStoreService} from './chapter/services/chapter-store.service';
 

@@ -6,12 +6,12 @@ import {
   StateContext,
 } from '@ngxs/store';
 import {Observable} from 'rxjs';
-import {LocalStorageKeys} from '../../../../shared/enums/storage-keys';
-import {undefined$} from '../../../../shared/functions/void-observable';
-import {IChapter} from '../../../../shared/models/chapter/chapter.interface';
-import {BasicCrud} from '../../../shared/basic/basic-crud';
-import {BasicModelStateInterface} from '../../../shared/basic/basic-model-state.interface';
-import {LocalStorageStateModel} from '../local-storage/local-storage.state';
+import {LocalStorageKeys} from '../../../shared/enums/storage-keys';
+import {undefined$} from '../../../shared/functions/void-observable';
+import {IChapter} from '../../../shared/models/chapter/chapter.interface';
+import {BasicCrud} from '../../shared/basic/basic-crud';
+import {BasicModelStateInterface} from '../../shared/basic/basic-model-state.interface';
+import {LocalStorageStateModel} from '../../database/states/local-storage/local-storage.state';
 import {ChaptersActions} from './chapters.actions';
 
 export interface ChaptersStateModel extends BasicModelStateInterface<IChapter> {
