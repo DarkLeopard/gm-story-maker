@@ -43,11 +43,11 @@ const MAT_MODULES = [
 export class ChapterModule {
   constructor(
     private store: Store,
-    private storyStoreService: ChapterStoreService,
+    private chapterStoreService: ChapterStoreService,
   ) {
     this.store.dispatch(new ChaptersActions.Load(this.store.selectSnapshot(IndexDBState.getChapters)))
       .subscribe(() => {
-        this.storyStoreService.initStorageSaver();
+        this.chapterStoreService.initStorageSaver();
       });
   }
 }
