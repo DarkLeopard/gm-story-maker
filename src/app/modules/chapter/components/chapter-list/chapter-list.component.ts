@@ -15,7 +15,7 @@ enum DisplayedColumnsKeysEnum {
   styleUrls: ['./chapter-list.component.scss'],
 })
 export class ChapterListComponent {
-  public dataSource = this.storyStoreService.chaptersDB;
+  public dataSource = this.storyStoreService.chapters;
 
   public displayedColumns: string[] = [
     DisplayedColumnsKeysEnum.Id,

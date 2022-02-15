@@ -2,7 +2,6 @@ import {
   Component,
   OnInit,
 } from '@angular/core';
-import {ChapterStoreService} from '../chapter/services/chapter-store.service';
 import {JsonLoaderService} from '../chapter/services/json-loader.service';
 
 @Component({
@@ -13,12 +12,10 @@ import {JsonLoaderService} from '../chapter/services/json-loader.service';
 export class AppComponent implements OnInit {
 
   constructor(
-    private storyStoreService: ChapterStoreService,
     private jsonLoaderService: JsonLoaderService,
   ) {}
 
   public ngOnInit(): void {
-    this.storyStoreService.initStorageSaver();
   }
 
   public loadJson(event: Event): void {

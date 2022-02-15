@@ -148,7 +148,7 @@ export class ChapterComponent implements OnInit {
     this.selectRelation.valueChanges
       .pipe(
         switchMap((value: string) => {
-          return this.chapterStoreService.chaptersDB
+          return this.chapterStoreService.chapters
             .pipe(
               map((chaptersDB: IChapter[]) => {
                 return chaptersDB

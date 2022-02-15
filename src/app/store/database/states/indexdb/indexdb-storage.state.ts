@@ -16,17 +16,16 @@ import {
 import {StorageKeys} from '../../../../shared/enums/storage-keys';
 import {undefined$} from '../../../../shared/functions/void-observable';
 import {IChapter} from '../../../../shared/models/chapter/chapter.interface';
-import {ChaptersActions} from '../../../models/chapters/chapters.actions';
 import {IndexDBActions} from './indexdb-storage.actions';
 
 export interface IndexDBStateModel {
-  restoreAtInitStatus: boolean;
+  isInited: boolean;
   [StorageKeys.Chapters]: IChapter[];
 }
 
 const getDefaults: () => IndexDBStateModel = () => {
   return {
-    restoreAtInitStatus: false,
+    isInited: false,
     [StorageKeys.Chapters]: [],
   };
 };
@@ -37,8 +36,13 @@ const getDefaults: () => IndexDBStateModel = () => {
 })
 export class IndexDBState {
   @Selector()
-  public static getRestoreAtInitStatus(state: IndexDBStateModel): IndexDBStateModel['restoreAtInitStatus'] {
-    return state.restoreAtInitStatus;
+  public static isInited(state: IndexDBStateModel): IndexDBStateModel['isInited'] {
+    return state.isInited;
+  }
+
+  @Selector()
+  public static getChapters(state: IndexDBStateModel): IndexDBStateModel['chapters'] {
+    return state[StorageKeys.Chapters];
   }
 
   @Action(IndexDBActions.SetItem)
@@ -59,9 +63,7 @@ export class IndexDBState {
       this.getItemDB<IChapter[]>(StorageKeys.Chapters)
         .pipe(
           tap((value: IChapter[] | null) => {
-            const newValue: IChapter[] = value || [];
-            context.patchState({[StorageKeys.Chapters]: newValue});
-            context.dispatch(new ChaptersActions.Load(newValue));
+            context.patchState({[StorageKeys.Chapters]: value || []});
             if (!value) {
               console.warn('No data in storage: ', StorageKeys.Chapters);
             }
@@ -70,7 +72,7 @@ export class IndexDBState {
     )
       .pipe(
         tap(() => {
-          context.patchState({restoreAtInitStatus: true});
+          context.patchState({isInited: true});
         }),
         catchError((error, caught) => {
           console.error('Error from storage DB', error);

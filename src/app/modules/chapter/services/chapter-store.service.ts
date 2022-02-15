@@ -4,31 +4,29 @@ import {
   Select,
   Store,
 } from '@ngxs/store';
-import {saveAs} from 'file-saver';
 import {
-  BehaviorSubject,
+  filter,
   forkJoin,
   merge,
   Observable,
-  skipUntil,
   switchMapTo,
 } from 'rxjs';
 import {StorageKeys} from '../../../shared/enums/storage-keys';
 import {undefined$} from '../../../shared/functions/void-observable';
 import {IChapter} from '../../../shared/models/chapter/chapter.interface';
-import {ChaptersActions} from '../../../store/models/chapters/chapters.actions';
-import {ChaptersState} from '../../../store/models/chapters/chapters.state';
 import {IndexDBActions} from '../../../store/database/states/indexdb/indexdb-storage.actions';
 import {IndexDBState} from '../../../store/database/states/indexdb/indexdb-storage.state';
+import {ChaptersActions} from '../../../store/models/chapters/chapters.actions';
+import {ChaptersState} from '../../../store/models/chapters/chapters.state';
 
 @Injectable()
 export class ChapterStoreService {
 
   @Select(ChaptersState.readChapters)
-  public chaptersDB!: Observable<IChapter[]>;
+  public chapters!: Observable<IChapter[]>;
 
-  @Select(IndexDBState.getRestoreAtInitStatus)
-  public restoreAtInitStatus!: Observable<boolean>;
+  @Select(IndexDBState.isInited)
+  public isIndexDBInited!: Observable<boolean>;
 
   constructor(
     private translateService: TranslateService,
@@ -92,29 +90,28 @@ export class ChapterStoreService {
       this.updateChapter(chapter1).subscribe();
       this.updateChapter(chapter2).subscribe();
     } else {
-      console.error('No chapter to link.', chapter1, chapter2);
+      console.error('DEV_ERROR: No chapter to link.', chapter1, chapter2);
     }
   }
 
-  public saveInDB(): Observable<void> {
-    return forkJoin(
-      this.store.dispatch(new IndexDBActions.SetItem(StorageKeys.Chapters, this.store.selectSnapshot(ChaptersState.readChapters))),
-    )
-      .pipe(
-        switchMapTo(undefined$()),
-      );
-  }
-
   public initStorageSaver(): void {
-    merge(
-      this.chaptersDB,
-    )
+    const entities: Observable<any>[] = [
+      this.chapters,
+    ];
+    this.isIndexDBInited
       .pipe(
-        skipUntil(this.restoreAtInitStatus),
+        filter((v: boolean) => v),
+        switchMapTo(merge(...entities)),
       )
       .subscribe(() => {
-        this.saveInDB()
-          .subscribe();
+        this.saveInDB().subscribe();
       });
+  }
+
+  private saveInDB(): Observable<void> {
+    const queries: Observable<void>[] = [
+      this.store.dispatch(new IndexDBActions.SetItem(StorageKeys.Chapters, this.store.selectSnapshot(ChaptersState.readChapters))),
+    ];
+    return forkJoin(queries).pipe(switchMapTo(undefined$()));
   }
 }

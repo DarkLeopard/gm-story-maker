@@ -1,6 +1,5 @@
 import {
   Action,
-  createSelector,
   Selector,
   State,
   StateContext,
