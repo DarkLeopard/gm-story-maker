@@ -1,3 +1,4 @@
+import { Injectable } from '@angular/core';
 import {
   Action,
   createSelector,
@@ -16,6 +17,7 @@ import {IChapter} from '../../../shared/models/chapter/chapter.interface';
 import {BasicCrud} from '../../shared/basic/basic-crud';
 import {BasicModelStateInterface} from '../../shared/basic/basic-model-state.interface';
 import {ChaptersActions} from '../chapters/chapters.actions';
+import {ModelsNamesEnum} from '../models-names';
 import {LinksActions} from './links.actions';
 
 export interface LinksStateModel extends BasicModelStateInterface<ILink> {
@@ -28,9 +30,10 @@ const getDefaults: () => LinksStateModel = () => {
 };
 
 @State<LinksStateModel>({
-  name: 'links',
+  name: ModelsNamesEnum.Links,
   defaults: getDefaults(),
 })
+@Injectable()
 export class LinksState extends BasicCrud {
   @Selector()
   public static links(state: LinksStateModel): ILink[] {
@@ -46,12 +49,6 @@ export class LinksState extends BasicCrud {
   static linksFromByChapterId(chapterId: IChapter['id']): (state: LinksStateModel) => ILink[] {
     return createSelector([LinksState], (state: LinksStateModel) => {
       return state.entities.filter((link: ILink) => link.from === chapterId);
-    });
-  }
-
-  static linksByChapterId(chapterId: IChapter['id']): (state: LinksStateModel) => ILink[] {
-    return createSelector([LinksState], (state: LinksStateModel) => {
-      return state.entities.filter((link: ILink) => link.to === chapterId || link.from === chapterId);
     });
   }
 

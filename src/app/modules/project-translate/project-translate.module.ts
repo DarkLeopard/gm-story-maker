@@ -11,7 +11,7 @@ import {TranslateHttpLoader} from '@ngx-translate/http-loader';
 import {BasicTranslatePickerComponent} from './basic-translate-picker/basic-translate-picker.component';
 import {ProjectTranslateService} from './services/project-translate.service';
 
-export function createTranslateLoader(http: HttpClient) {
+export function createTranslateLoader(http: HttpClient): TranslateHttpLoader {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
 }
 

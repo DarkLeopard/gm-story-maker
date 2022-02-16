@@ -1,9 +1,8 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  OnInit,
 } from '@angular/core';
-import {JsonLoaderService} from '../../chapter/services/json-loader.service';
+import {JsonLoaderService} from '../../services/json-loader.service';
 
 @Component({
   selector: 'app-json-saver',
@@ -11,27 +10,24 @@ import {JsonLoaderService} from '../../chapter/services/json-loader.service';
   styleUrls: ['./json-saver.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class JsonSaverComponent implements OnInit {
+export class JsonSaverComponent {
 
   constructor(
     private jsonLoaderService: JsonLoaderService,
   ) { }
 
-  public ngOnInit(): void {
-  }
-
-  public loadJson(event: Event): void {
+  public load(event: Event): void {
     const file: File | null | undefined = ((event.target as any)?.files as FileList).item(0);
 
     if (file) {
-      this.jsonLoaderService.userLoadJson(file);
+      this.jsonLoaderService.load(file);
     } else {
-      console.error('No file');
+      console.error('DEV_ERROR: No file');
     }
   }
 
   public save(): void {
-    this.jsonLoaderService.userSaveJson();
+    this.jsonLoaderService.save();
   }
 
 }

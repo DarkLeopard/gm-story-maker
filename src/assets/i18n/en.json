@@ -18,5 +18,9 @@
     "TITLE": "Title",
     "ID": "ID",
     "ADD_NEW_CHAPTER": "Add new chapter"
+  },
+  "JSON_SAVER": {
+    "SAVE": "Save to file",
+    "LOAD": "Load from file"
   }
 }

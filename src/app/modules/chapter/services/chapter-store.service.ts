@@ -60,10 +60,6 @@ export class ChapterStoreService {
     return this.store.selectSnapshot(LinksState.linksFromByChapterId(chapterId));
   }
 
-  public linksByChapterId(chapterId: IChapter['id']): ILink[] {
-    return this.store.selectSnapshot(LinksState.linksByChapterId(chapterId));
-  }
-
   public getChaptersByLinkId(link: ILink): IChapter[] {
     return this.store.selectSnapshot(ChaptersState.getChaptersByLink(link.id));
   }

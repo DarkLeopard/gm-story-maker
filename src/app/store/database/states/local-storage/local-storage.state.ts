@@ -1,3 +1,4 @@
+import {Injectable} from '@angular/core';
 import {
   Action,
   Selector,
@@ -7,6 +8,7 @@ import {
 import {Observable} from 'rxjs';
 import {LocalStorageKeys} from '../../../../shared/enums/storage-keys';
 import {undefined$} from '../../../../shared/functions/void-observable';
+import {DatabaseNamesEnum} from '../../database-names';
 import {LocalStorageActions} from './local-storage.actions';
 
 export type LocalStorageStateModel = {
@@ -20,9 +22,10 @@ const getDefaults: () => LocalStorageStateModel = () => {
 };
 
 @State<LocalStorageStateModel>({
-  name: 'localStorage',
+  name: DatabaseNamesEnum.LocalStorage,
   defaults: getDefaults(),
 })
+@Injectable()
 export class LocalStorageState {
   /** Use only for tests */
   @Selector()
@@ -55,9 +58,9 @@ export class LocalStorageState {
     return undefined$();
   }
 
-  private getItemLS<T = string>(key: LocalStorageKeys): T | null {
-    return localStorage.getItem(key) as unknown as T;
-  }
+  // private getItemLS<T = string>(key: LocalStorageKeys): T | null {
+  //   return localStorage.getItem(key) as unknown as T;
+  // }
 
   private setItemLS(key: LocalStorageKeys, value: string): void {
     localStorage.setItem(key, value);

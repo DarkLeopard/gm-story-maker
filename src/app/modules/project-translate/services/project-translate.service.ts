@@ -4,10 +4,7 @@ import {
   Select,
   Store,
 } from '@ngxs/store';
-import {
-  BehaviorSubject,
-  Observable,
-} from 'rxjs';
+import {Observable} from 'rxjs';
 import {LocalStorageKeys} from '../../../shared/enums/storage-keys';
 import {LocalStorageActions} from '../../../store/database/states/local-storage/local-storage.actions';
 import {LocalStorageState} from '../../../store/database/states/local-storage/local-storage.state';
@@ -16,13 +13,12 @@ import {LanguagesEnum} from '../enums/languages.enum';
 @Injectable()
 export class ProjectTranslateService {
 
+  @Select(LocalStorageState.getLang)
+  public language!: Observable<LanguagesEnum>;
   private langs: Map<string, LanguagesEnum> = new Map([
     ['russian', LanguagesEnum.russian],
     ['english', LanguagesEnum.english],
   ]);
-
-  @Select(LocalStorageState.getLang)
-  public language!: Observable<LanguagesEnum>
 
   constructor(
     private translateService: TranslateService,

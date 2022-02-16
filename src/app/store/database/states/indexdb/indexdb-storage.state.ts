@@ -1,3 +1,4 @@
+import {Injectable} from '@angular/core';
 import {
   Action,
   Selector,
@@ -17,6 +18,7 @@ import {StorageKeys} from '../../../../shared/enums/storage-keys';
 import {undefined$} from '../../../../shared/functions/void-observable';
 import {IChapter} from '../../../../shared/models/chapter/chapter.interface';
 import {ILink} from '../../../../shared/models/links/links.interface';
+import {DatabaseNamesEnum} from '../../database-names';
 import {IndexDBActions} from './indexdb-storage.actions';
 
 export interface IndexDBStateModel {
@@ -35,9 +37,10 @@ const getDefaults: () => IndexDBStateModel = () => {
 };
 
 @State<IndexDBStateModel>({
-  name: 'indexDB',
+  name: DatabaseNamesEnum.IndexDB,
   defaults: getDefaults(),
 })
+@Injectable()
 export class IndexDBState {
   @Selector()
   public static isInited(state: IndexDBStateModel): IndexDBStateModel['isInited'] {

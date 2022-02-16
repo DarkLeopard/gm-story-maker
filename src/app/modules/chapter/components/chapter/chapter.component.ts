@@ -20,7 +20,6 @@ import {
   of,
   switchMap,
   takeUntil,
-  tap,
 } from 'rxjs';
 import {ID_PARAM} from '../../../../shared/constants/common-routing.constants';
 import {IChapter} from '../../../../shared/models/chapter/chapter.interface';

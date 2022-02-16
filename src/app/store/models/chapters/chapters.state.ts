@@ -1,3 +1,4 @@
+import {Injectable} from '@angular/core';
 import {
   Action,
   createSelector,
@@ -16,6 +17,7 @@ import {IChapter} from '../../../shared/models/chapter/chapter.interface';
 import {ILink} from '../../../shared/models/links/links.interface';
 import {BasicCrud} from '../../shared/basic/basic-crud';
 import {BasicModelStateInterface} from '../../shared/basic/basic-model-state.interface';
+import {ModelsNamesEnum} from '../models-names';
 import {ChaptersActions} from './chapters.actions';
 
 export interface ChaptersStateModel extends BasicModelStateInterface<IChapter> {
@@ -28,9 +30,10 @@ const getDefaults: () => ChaptersStateModel = () => {
 };
 
 @State<ChaptersStateModel>({
-  name: 'chapters',
+  name: ModelsNamesEnum.Chapters,
   defaults: getDefaults(),
 })
+@Injectable()
 export class ChaptersState extends BasicCrud {
   @Selector()
   public static chapters(state: ChaptersStateModel): IChapter[] {
