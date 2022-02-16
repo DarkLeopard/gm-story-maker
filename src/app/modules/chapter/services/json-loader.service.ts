@@ -17,7 +17,7 @@ export class JsonLoaderService {
   public userSaveJson(value?: ISavedData): void {
     if (!value) {
       value = {
-        storiesDB: this.store.selectSnapshot(ChaptersState.chapters),
+        chapters: this.store.selectSnapshot(ChaptersState.chapters),
       };
     }
     const blob = new Blob([JSON.stringify(value)], {type: 'application/json'});
@@ -28,7 +28,7 @@ export class JsonLoaderService {
     const reader: FileReader = new FileReader();
     reader.onloadend = (event: ProgressEvent<FileReader>) => {
       const file: ISavedData = JSON.parse(event.target?.result as string);
-      this.store.dispatch(new ChaptersActions.Load(file.storiesDB));
+      this.store.dispatch(new ChaptersActions.Load(file.chapters));
     };
     reader.readAsText(file);
   }

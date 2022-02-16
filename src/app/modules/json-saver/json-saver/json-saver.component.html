@@ -1,0 +1,19 @@
+<button [matMenuTriggerFor]="saveMenu" color="primary" mat-icon-button>
+  <mat-icon>backup</mat-icon>
+</button>
+<input
+  #jsonInput
+  (change)="loadJson($event)"
+  [hidden]="true"
+  type="file"
+/>
+<mat-menu #saveMenu="matMenu">
+  <button (click)="jsonInput.click()" mat-menu-item>
+    <mat-icon>file_upload</mat-icon>
+    <span>Загрузить из файла</span>
+  </button>
+  <button (click)="save()" mat-menu-item>
+    <mat-icon>file_download</mat-icon>
+    <span>Скачать файл</span>
+  </button>
+</mat-menu>

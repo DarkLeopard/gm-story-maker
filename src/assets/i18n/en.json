@@ -8,6 +8,8 @@
     "ID": "ID",
     "MAIN_TEXT": "Main text",
     "RELATIONS": "Chapters relations",
+    "RELATIONS_FROM": "Link from",
+    "RELATIONS_TO": "Link to",
     "ADD_RELATION": "Add link",
     "ADD_RELATION_PLACEHOLDER": "Search by title",
     "CHAPTER": "Chapter"

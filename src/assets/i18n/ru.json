@@ -8,8 +8,8 @@
     "ID": "ID",
     "MAIN_TEXT": "Главный текст",
     "RELATIONS": "Связи между главами",
-    "RELATIONS_FROM": "Связано с",
-    "RELATIONS_TO": "Получена связь от",
+    "RELATIONS_FROM": "Ссылка из",
+    "RELATIONS_TO": "Ссылка в",
     "ADD_RELATION": "Добавить связь",
     "ADD_RELATION_PLACEHOLDER": "Поиск по заголовку",
     "CHAPTER": "Глава"

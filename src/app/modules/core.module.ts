@@ -18,6 +18,7 @@ import {WINDOW_PROVIDER} from '../shared/providers/window-provider';
 import {IndexDBActions} from '../store/database/states/indexdb/indexdb-storage.actions';
 import {NgxsStoreModule} from '../store/store.module';
 import {ChapterStoreService} from './chapter/services/chapter-store.service';
+import {ProjectTranslateModule} from './project-translate/project-translate.module';
 
 function appInit(storyStoreService: ChapterStoreService, store: Store): () => Observable<unknown> | Promise<unknown> {
   return () => forkJoin(store.dispatch(new IndexDBActions.Restore()));
@@ -31,6 +32,7 @@ function appInit(storyStoreService: ChapterStoreService, store: Store): () => Ob
     BrowserAnimationsModule,
     HttpClientModule,
     NgxsStoreModule,
+    ProjectTranslateModule
   ],
 })
 export class CoreModule {

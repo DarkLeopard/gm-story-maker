@@ -4,9 +4,7 @@
       <h1 routerLink="./" style="cursor: pointer">GM Story Maker <small style="opacity: 0.5">ver 0.1</small></h1>
     </div>
     <div style="margin: 0 20px">
-      <button [matMenuTriggerFor]="saveMenu" color="primary" mat-icon-button>
-        <mat-icon>backup</mat-icon>
-      </button>
+      <app-json-saver></app-json-saver>
     </div>
     <app-basic-translate-picker></app-basic-translate-picker>
   </mat-toolbar>
@@ -17,19 +15,4 @@
 <footer>
 </footer>
 <!-- templates -->
-<input
-  #jsonInput
-  (change)="loadJson($event)"
-  [hidden]="true"
-  type="file"
-/>
-<mat-menu #saveMenu="matMenu">
-  <button (click)="jsonInput.click()" mat-menu-item>
-    <mat-icon>file_upload</mat-icon>
-    <span>Загрузить из файла</span>
-  </button>
-  <button (click)="save()" mat-menu-item>
-    <mat-icon>file_download</mat-icon>
-    <span>Скачать файл</span>
-  </button>
-</mat-menu>
+
