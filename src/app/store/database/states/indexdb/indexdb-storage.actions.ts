@@ -4,7 +4,7 @@ export namespace IndexDBActions {
   const ACTION_NAME: string = '[IndexDB]';
 
   export class SetItem {
-    static readonly type: string = `${ACTION_NAME} Save to IndexDB.`;
+    static readonly type: string = `${ACTION_NAME} Set item to IndexDB.`;
 
     constructor(
       public key: StorageKeys,

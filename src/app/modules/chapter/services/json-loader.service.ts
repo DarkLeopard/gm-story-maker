@@ -17,7 +17,7 @@ export class JsonLoaderService {
   public userSaveJson(value?: ISavedData): void {
     if (!value) {
       value = {
-        storiesDB: this.store.selectSnapshot(ChaptersState.readChapters),
+        storiesDB: this.store.selectSnapshot(ChaptersState.chapters),
       };
     }
     const blob = new Blob([JSON.stringify(value)], {type: 'application/json'});

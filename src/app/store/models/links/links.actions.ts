@@ -1,38 +1,23 @@
 import {ILink} from '../../../shared/models/links/links.interface';
+import {BasicCrudActions} from '../../shared/basic/basic-crud.actions';
 
 export namespace LinksActions {
 
   const ACTION_NAME: string = '[Links]';
 
-  export class Create {
-    static readonly type: string = `${ACTION_NAME} Create link.`;
-
-    constructor(
-      public chapter: Omit<ILink, 'id'>,
-    ) {}
+  export class Create extends BasicCrudActions.Create<ILink> {
+    static override readonly type: string = `${ACTION_NAME} Create link.`;
   }
 
-  export class Update {
-    static readonly type: string = `${ACTION_NAME} Update link.`;
-
-    constructor(
-      public chapter: ILink,
-    ) {}
+  export class Update extends BasicCrudActions.Update<ILink> {
+    static override readonly type: string = `${ACTION_NAME} Update link.`;
   }
 
-  export class Delete {
-    static readonly type: string = `${ACTION_NAME} Delete link.`;
-
-    constructor(
-      public chapterId: ILink['id'],
-    ) {}
+  export class Delete extends BasicCrudActions.Delete<ILink> {
+    static override readonly type: string = `${ACTION_NAME} Delete link.`;
   }
 
-  export class Load {
-    static readonly type: string = `${ACTION_NAME} Load links.`;
-
-    constructor(
-      public chapters: ILink[],
-    ) {}
+  export class Load extends BasicCrudActions.Load<ILink> {
+    static override readonly type: string = `${ACTION_NAME} Load links.`;
   }
 }

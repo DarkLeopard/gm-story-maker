@@ -8,8 +8,8 @@
       <input [formControlName]="formFields.Title" matInput [placeholder]="'CHAPTER_PAGE.TITLE' | translate">
     </mat-form-field>
     <mat-form-field>
-      <input [formControlName]="formFields.MainTxt" matInput
-             [placeholder]="'CHAPTER_PAGE.MAIN_TEXT' | translate">
+      <textarea [formControlName]="formFields.MainTxt" matInput  cdkTextareaAutosize
+                [placeholder]="'CHAPTER_PAGE.MAIN_TEXT' | translate"></textarea>
     </mat-form-field>
   </mat-card-content>
   <mat-card-actions style="display: flex; justify-content: space-between">
@@ -21,7 +21,7 @@
              [formControl]="selectRelation"
              [matAutocomplete]="auto">
       <mat-autocomplete #auto="matAutocomplete">
-        <mat-option *ngFor="let option of releationSelectOptions | async"
+        <mat-option *ngFor="let option of releationSelectOptions$ | async"
                     (onSelectionChange)="createLink(option.id)"
         >
           {{option.id + ' ' + option.title}}
@@ -30,12 +30,12 @@
     </mat-form-field>
   </mat-card-actions>
 </mat-card>
-<mat-card style="margin: 20px 0" *ngIf="hasRelations(relationsDataSource$ | async)">
+<mat-card style="margin: 20px 0" *ngIf="hasRelations(relationsFromDataSource$ | async)">
   <mat-card-header>
-    <mat-card-title [innerHTML]="'CHAPTER_PAGE.RELATIONS' | translate"></mat-card-title>
+    <mat-card-title [innerHTML]="'CHAPTER_PAGE.RELATIONS_FROM' | translate"></mat-card-title>
   </mat-card-header>
   <mat-card-content>
-    <table [dataSource]="relationsDataSource$" mat-table style="width: 100%">
+    <table [dataSource]="relationsFromDataSource$" mat-table style="width: 100%">
       <ng-container [matColumnDef]="columnsKeysEnum.Id">
         <th *matHeaderCellDef mat-header-cell style="width: 50px">{{'CHAPTER_PAGE.ID' | translate}}</th>
         <td *matCellDef="let element" mat-cell style="width: 50px">{{element.id}}</td>
@@ -49,7 +49,36 @@
       <ng-container [matColumnDef]="columnsKeysEnum.Actions">
         <th *matHeaderCellDef mat-header-cell style="width: 50px"></th>
         <td *matCellDef="let element" mat-cell style="width: 50px">
-          <button (click)="deleteLink(element.id)" color="warn" mat-icon-button>
+          <button (click)="deleteLinkFrom(element)" color="warn" mat-icon-button>
+            <mat-icon>delete</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+      <tr *matHeaderRowDef="displayedColumns" mat-header-row></tr>
+      <tr *matRowDef="let row; let element columns: displayedColumns;" mat-row></tr>
+    </table>
+  </mat-card-content>
+</mat-card>
+<mat-card style="margin: 20px 0" *ngIf="hasRelations(relationsToDataSource$ | async)">
+  <mat-card-header>
+    <mat-card-title [innerHTML]="'CHAPTER_PAGE.RELATIONS_TO' | translate"></mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <table [dataSource]="relationsToDataSource$" mat-table style="width: 100%">
+      <ng-container [matColumnDef]="columnsKeysEnum.Id">
+        <th *matHeaderCellDef mat-header-cell style="width: 50px">{{'CHAPTER_PAGE.ID' | translate}}</th>
+        <td *matCellDef="let element" mat-cell style="width: 50px">{{element.id}}</td>
+      </ng-container>
+      <ng-container [matColumnDef]="columnsKeysEnum.Title">
+        <th *matHeaderCellDef mat-header-cell>{{'CHAPTER_PAGE.TITLE' | translate}}</th>
+        <td *matCellDef="let element" mat-cell>
+          <span (click)="goToChapter(element)" style="cursor: pointer">{{element.title}}</span>
+        </td>
+      </ng-container>
+      <ng-container [matColumnDef]="columnsKeysEnum.Actions">
+        <th *matHeaderCellDef mat-header-cell style="width: 50px"></th>
+        <td *matCellDef="let element" mat-cell style="width: 50px">
+          <button (click)="deleteLinkTo(element)" color="warn" mat-icon-button>
             <mat-icon>delete</mat-icon>
           </button>
         </td>

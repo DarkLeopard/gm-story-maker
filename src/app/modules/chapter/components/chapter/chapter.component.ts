@@ -1,4 +1,5 @@
 import {
+  ChangeDetectionStrategy,
   Component,
   OnInit,
 } from '@angular/core';
@@ -10,7 +11,6 @@ import {
   ActivatedRoute,
   Router,
 } from '@angular/router';
-import {Store} from '@ngxs/store';
 import {
   BehaviorSubject,
   debounceTime,
@@ -23,10 +23,10 @@ import {
   tap,
 } from 'rxjs';
 import {ID_PARAM} from '../../../../shared/constants/common-routing.constants';
-import {Unsubscriber} from '../../../../shared/services/unsubscriber.service';
-import {ChaptersState} from '../../../../store/models/chapters/chapters.state';
-import {ChapterRoutingConstants} from '../../chapter-routing.constants';
 import {IChapter} from '../../../../shared/models/chapter/chapter.interface';
+import {ILink} from '../../../../shared/models/links/links.interface';
+import {Unsubscriber} from '../../../../shared/services/unsubscriber.service';
+import {ChapterRoutingConstants} from '../../chapter-routing.constants';
 import {ChapterStoreService} from '../../services/chapter-store.service';
 
 enum FormFields {
@@ -48,71 +48,76 @@ enum DisplayedColumnsKeysEnum {
   templateUrl: './chapter.component.html',
   styleUrls: ['./chapter.component.scss'],
   providers: [Unsubscriber],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ChapterComponent implements OnInit {
 
   public chapterId: number = Number(this.activatedRoute.snapshot.paramMap.get(ID_PARAM)); // undefined check in router module
-  public chapter: FormGroup = new FormGroup({
-    [FormFields.Id]: new FormControl(undefined),
-    [FormFields.Title]: new FormControl(undefined),
-    [FormFields.RelationsIds]: new FormControl([]),
-    [FormFields.MainTxt]: new FormControl(undefined),
-  });
+  public chapter: FormGroup = this.createChapterFG();
   public formFields: typeof FormFields = FormFields;
-  public displayedColumns: string[] = [
-    DisplayedColumnsKeysEnum.Id,
-    DisplayedColumnsKeysEnum.Title,
-    DisplayedColumnsKeysEnum.Actions,
-  ];
+  public displayedColumns: string[] = this.getDisptayedColumns();
   public columnsKeysEnum: typeof DisplayedColumnsKeysEnum = DisplayedColumnsKeysEnum;
   public selectRelation: FormControl = new FormControl(undefined);
-
-  public releationSelectOptions: BehaviorSubject<IChapter[]> = new BehaviorSubject<IChapter[]>([]);
-  private relationsDataSourceBS: BehaviorSubject<IChapter[]> = new BehaviorSubject<IChapter[]>([]);
-  public relationsDataSource$: Observable<IChapter[]> = this.relationsDataSourceBS.asObservable();
+  public chapterLinksTo$: Observable<ILink[]> = this.chapterStoreService.linksToByChapterId$(this.chapterId);
+  public chapterLinksFrom$: Observable<ILink[]> = this.chapterStoreService.linksFromByChapterId$(this.chapterId);
+  public relationsToDataSource$: Observable<IChapter[]> = this.chapterLinksTo$.pipe(map(this.getChaptersByLink.bind(this)));
+  public relationsFromDataSource$: Observable<IChapter[]> = this.chapterLinksFrom$.pipe(map(this.getChaptersByLink.bind(this)));
+  private releationSelectOptionsBS: BehaviorSubject<IChapter[]> = new BehaviorSubject<IChapter[]>([]);
+  public releationSelectOptions$: Observable<IChapter[]> = this.releationSelectOptionsBS.asObservable();
 
   constructor(
     private activatedRoute: ActivatedRoute,
     private router: Router,
     private chapterStoreService: ChapterStoreService,
     private unsubscriber: Unsubscriber,
-    private store: Store,
   ) { }
 
   public ngOnInit() {
-    const loadedChapter: IChapter | undefined = this.store.selectSnapshot(ChaptersState.chapter(this.chapterId));
+    const loadedChapter: IChapter | undefined = this.chapterStoreService.getChapter(this.chapterId);
     if (!loadedChapter) {
       this.router.navigateByUrl(ChapterRoutingConstants.getFullLink(ChapterRoutingConstants.List));
     } else {
-      const relationsIds: IChapter['relationsIds'] = loadedChapter.relationsIds;
-      const relations: IChapter[] = this.readRelations(relationsIds);
       this.chapter.setValue({
         [FormFields.Id]: loadedChapter.id,
         [FormFields.Title]: loadedChapter.title,
         [FormFields.RelationsIds]: loadedChapter.relationsIds,
         [FormFields.MainTxt]: loadedChapter.mainTxt,
       });
-
-      this.relationsDataSourceBS.next(relations);
       this.initRelationsObserver();
       this.fieldsAutosaver();
     }
   }
 
-  public goToChapter(id: IChapter['id']): void {
-    this.chapterId = id;
-    this.router.navigate([ChapterRoutingConstants.getChapterLink(id)])
+  public goToChapter(chapterId: IChapter['id']): void {
+    this.chapterId = chapterId; // TODO check why for
+    this.router.navigate([ChapterRoutingConstants.getChapterLink(chapterId)])
       .then(() => this.reloadComponent());
   }
 
   public createLink(id: IChapter['id']): void {
-    this.chapterStoreService.addLinkToChapter(this.chapter.get(FormFields.Id)?.value, id);
-    this.reloadComponent();
+    this.chapterStoreService.addLink(this.chapterId, id)
+      .subscribe(() => this.reloadComponent());
+
   }
 
-  public deleteLink(id: IChapter['id']): void {
-    this.chapterStoreService.deleteLinkFromChapter(this.chapterId, id);
-    this.reloadComponent();
+  public deleteLinkFrom(chapterFrom: IChapter): void {
+    const link: ILink | undefined = this.chapterStoreService.getLinkByChapters(this.chapterId, chapterFrom.id);
+    if (link) {
+      this.chapterStoreService.deleteLink(link.id)
+        .subscribe(() => this.reloadComponent());
+    } else {
+      console.error(`DEV_ERROR: Cant find Link with parameters: to = ${chapterFrom}, from = ${this.chapterId}`);
+    }
+  }
+
+  public deleteLinkTo(chapterTo: IChapter): void {
+    const link: ILink | undefined = this.chapterStoreService.getLinkByChapters(chapterTo.id, this.chapterId);
+    if (link) {
+      this.chapterStoreService.deleteLink(link.id)
+        .subscribe(() => this.reloadComponent());
+    } else {
+      console.error(`DEV_ERROR: Cant find Link with parameters: to = ${chapterTo.id}, from = ${this.chapterId}`);
+    }
   }
 
   public save(): void {
@@ -121,6 +126,29 @@ export class ChapterComponent implements OnInit {
 
   public hasRelations(chapters: IChapter[] | null): boolean {
     return !!chapters && chapters.length > 0;
+  }
+
+  private getDisptayedColumns(): DisplayedColumnsKeysEnum[] {
+    return [
+      DisplayedColumnsKeysEnum.Id,
+      DisplayedColumnsKeysEnum.Title,
+      DisplayedColumnsKeysEnum.Actions,
+    ];
+  }
+
+  private createChapterFG(): FormGroup {
+    return new FormGroup({
+      [FormFields.Id]: new FormControl(undefined),
+      [FormFields.Title]: new FormControl(undefined),
+      [FormFields.RelationsIds]: new FormControl([]),
+      [FormFields.MainTxt]: new FormControl(undefined),
+    });
+  }
+
+  private getChaptersByLink(links: ILink[]): IChapter[] {
+    return links
+      .reduce((acc: IChapter[], link: ILink) => [...acc, ...this.chapterStoreService.getChaptersByLinkId(link)], [])
+      .filter((chapter) => chapter.id !== this.chapterId);
   }
 
   private fieldsAutosaver(): void {
@@ -147,40 +175,20 @@ export class ChapterComponent implements OnInit {
   private initRelationsObserver(): void {
     this.selectRelation.valueChanges
       .pipe(
-        switchMap((value: string) => {
-          return this.chapterStoreService.chapters
-            .pipe(
-              map((chaptersDB: IChapter[]) => {
-                return chaptersDB
-                  .filter((chapterDB: IChapter) => {
-                    if (
-                      chapterDB.id === this.chapterId
-                      || (this.chapter.get(FormFields.RelationsIds)?.value as number[])
-                        ?.some((alreadyId: number) => alreadyId === chapterDB.id)
-                    ) {
-                      return false;
-                    }
-                    return chapterDB.title.match(value);
-                  });
-              }),
-              tap((filtredChapters: IChapter[]) => {
-                this.releationSelectOptions.next(filtredChapters.slice(0, 4));
-              }),
-            );
+        switchMap((titleString: string) => {
+          return this.chapterStoreService.findChaptersByTitle(titleString, this.filterSearchedChaptersFrom.bind(this), 10);
         }),
         takeUntil(this.unsubscriber.destroy$),
       )
-      .subscribe();
+      .subscribe((chapters: IChapter[]) => {
+        this.releationSelectOptionsBS.next(chapters);
+      });
   }
 
-  private readRelations(relationsIds: IChapter['relationsIds']): IChapter[] {
-    const result: IChapter[] = [];
-    relationsIds?.forEach((chapterId: number) => {
-      const readedChapter: IChapter | undefined = this.store.selectSnapshot(ChaptersState.chapter(chapterId));
-      if (readedChapter) {
-        result.push(readedChapter);
-      }
-    });
-    return result;
+  private filterSearchedChaptersFrom(chapter: IChapter): boolean {
+    const isChapterEqualThisChapter: boolean = chapter.id === this.chapterId;
+    const currentLinks: ILink[] = this.chapterStoreService.linksFromByChapterId(this.chapterId);
+    const isLinksAlreadyAdded: boolean = currentLinks.some((link: ILink) => link.to === chapter.id);
+    return !(isChapterEqualThisChapter || isLinksAlreadyAdded);
   }
 }

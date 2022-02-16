@@ -30,6 +30,11 @@ export class LocalStorageState {
     return state;
   }
 
+  @Selector()
+  public static getLang(state: LocalStorageStateModel): LocalStorageStateModel['language'] {
+    return state[LocalStorageKeys.Language];
+  }
+
   /** Try not to use this method. */
   public static getItem<T = string>(key: LocalStorageKeys): T | null {
     return localStorage.getItem(key) as unknown as T;

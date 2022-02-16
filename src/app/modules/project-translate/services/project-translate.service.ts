@@ -1,6 +1,9 @@
 import {Injectable} from '@angular/core';
 import {TranslateService} from '@ngx-translate/core';
-import {Store} from '@ngxs/store';
+import {
+  Select,
+  Store,
+} from '@ngxs/store';
 import {
   BehaviorSubject,
   Observable,
@@ -13,23 +16,22 @@ import {LanguagesEnum} from '../enums/languages.enum';
 @Injectable()
 export class ProjectTranslateService {
 
-  private currentLanguageBS: BehaviorSubject<LanguagesEnum> = new BehaviorSubject<LanguagesEnum>(this.getSavedLang());
-  public currentLanguage: Observable<LanguagesEnum> = this.currentLanguageBS.asObservable();
-
   private langs: Map<string, LanguagesEnum> = new Map([
     ['russian', LanguagesEnum.russian],
     ['english', LanguagesEnum.english],
   ]);
 
+  @Select(LocalStorageState.getLang)
+  public language!: Observable<LanguagesEnum>
+
   constructor(
     private translateService: TranslateService,
     private store: Store,
   ) {
-    this.setLangsList();
+    this.initLangsList();
 
-    this.currentLanguageBS.subscribe((lang: LanguagesEnum) => {
+    this.language.subscribe((lang: LanguagesEnum) => {
       this.translateService.setDefaultLang(lang);
-      this.store.dispatch(new LocalStorageActions.SetItem(LocalStorageKeys.Language, lang));
     });
   }
 
@@ -42,20 +44,14 @@ export class ProjectTranslateService {
   }
 
   public changeLang(lang: LanguagesEnum): void {
-    if (this.currentLanguageBS.value !== lang) {
-      this.currentLanguageBS.next(lang);
-    }
+    this.store.dispatch(new LocalStorageActions.SetItem(LocalStorageKeys.Language, lang));
   }
 
-  private setLangsList(): void {
+  private initLangsList(): void {
     const langs: LanguagesEnum[] = [];
     for (const lang of this.langs.values()) {
       langs.push(lang);
     }
     this.translateService.addLangs(langs);
-  }
-
-  private getSavedLang(): LanguagesEnum {
-    return ProjectTranslateService.getStaticLang;
   }
 }

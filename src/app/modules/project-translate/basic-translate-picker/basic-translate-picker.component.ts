@@ -21,7 +21,7 @@ export class BasicTranslatePickerComponent implements OnInit {
   ) { }
 
   public ngOnInit(): void {
-    this.projectTranslateService.currentLanguage
+    this.projectTranslateService.language
       .subscribe((lang: LanguagesEnum) => {
         this.languageFC.setValue(lang);
       });

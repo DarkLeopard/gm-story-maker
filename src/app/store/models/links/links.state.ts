@@ -1,18 +1,24 @@
 import {
   Action,
+  createSelector,
   Selector,
   State,
   StateContext,
 } from '@ngxs/store';
-import {Observable} from 'rxjs';
+import {
+  Observable,
+  switchMap,
+  switchMapTo,
+  throwError,
+} from 'rxjs';
 import {ILink} from 'src/app/shared/models/links/links.interface';
-import {undefined$} from '../../../shared/functions/void-observable';
+import {IChapter} from '../../../shared/models/chapter/chapter.interface';
 import {BasicCrud} from '../../shared/basic/basic-crud';
 import {BasicModelStateInterface} from '../../shared/basic/basic-model-state.interface';
+import {ChaptersActions} from '../chapters/chapters.actions';
 import {LinksActions} from './links.actions';
 
 export interface LinksStateModel extends BasicModelStateInterface<ILink> {
-
 }
 
 const getDefaults: () => LinksStateModel = () => {
@@ -27,28 +33,60 @@ const getDefaults: () => LinksStateModel = () => {
 })
 export class LinksState extends BasicCrud {
   @Selector()
-  public static readLinks(state: LinksStateModel): ILink[] {
+  public static links(state: LinksStateModel): ILink[] {
     return state.entities;
   }
 
+  static linksToByChapterId(chapterId: IChapter['id']): (state: LinksStateModel) => ILink[] {
+    return createSelector([LinksState], (state: LinksStateModel) => {
+      return state.entities.filter((link: ILink) => link.to === chapterId);
+    });
+  }
+
+  static linksFromByChapterId(chapterId: IChapter['id']): (state: LinksStateModel) => ILink[] {
+    return createSelector([LinksState], (state: LinksStateModel) => {
+      return state.entities.filter((link: ILink) => link.from === chapterId);
+    });
+  }
+
+  static linksByChapterId(chapterId: IChapter['id']): (state: LinksStateModel) => ILink[] {
+    return createSelector([LinksState], (state: LinksStateModel) => {
+      return state.entities.filter((link: ILink) => link.to === chapterId || link.from === chapterId);
+    });
+  }
+
+  static getLinkByChapters(
+    chapterIdFrom: IChapter['id'],
+    chapterIdTo: IChapter['id'],
+  ): (state: LinksStateModel) => ILink | undefined {
+    return createSelector([LinksState], (state: LinksStateModel) => {
+      return state.entities
+        .find((link: ILink) => link.to === chapterIdTo && link.from === chapterIdFrom);
+    });
+  }
+
   @Action(LinksActions.Create)
-  public createChapter(context: StateContext<LinksStateModel>, payload: LinksActions.Create): Observable<void> {
-    return super.create<ILink>(payload.chapter, context);
+  public createLink(context: StateContext<LinksStateModel>, {entity}: LinksActions.Create): Observable<void> {
+    return super.create<ILink>(entity, context)
+      .pipe(switchMap((link: ILink) => context.dispatch(new ChaptersActions.AddRelation(link))));
   }
 
   @Action(LinksActions.Update)
-  public updateChapter(context: StateContext<LinksStateModel>, payload: LinksActions.Update): Observable<void> {
-    return super.uprade(payload.chapter, context, () => context.dispatch(new LinksActions.Create(payload.chapter)));
+  public updateLink(context: StateContext<LinksStateModel>, {entity}: LinksActions.Update): Observable<void> {
+    return super.uprade(entity, context, () => context.dispatch(new LinksActions.Create(entity)));
   }
 
   @Action(LinksActions.Delete)
-  public deleteChapter(context: StateContext<LinksStateModel>, payload: LinksActions.Delete): Observable<void> {
-    return super.delete(payload.chapterId, context);
+  public deleteLink(context: StateContext<LinksStateModel>, {entityId}: LinksActions.Delete): Observable<void> {
+    const link: ILink | undefined = [...context.getState().entities].find((value => value.id === entityId));
+    if (!link) return throwError(new Error(`DEV_ERROR: No link with id ${entityId}`));
+
+    return super.delete(entityId, context)
+      .pipe(switchMapTo(context.dispatch(new ChaptersActions.DeleteRelation(link))));
   }
 
   @Action(LinksActions.Load)
-  public load(context: StateContext<LinksStateModel>, payload: LinksActions.Load): Observable<void> {
-    context.setState({entities: payload.chapters});
-    return undefined$();
+  public loadLinks(context: StateContext<LinksStateModel>, {entities}: LinksActions.Load): Observable<void> {
+    return super.load(entities, context);
   }
 }

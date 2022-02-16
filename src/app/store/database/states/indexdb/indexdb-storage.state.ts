@@ -16,17 +16,21 @@ import {
 import {StorageKeys} from '../../../../shared/enums/storage-keys';
 import {undefined$} from '../../../../shared/functions/void-observable';
 import {IChapter} from '../../../../shared/models/chapter/chapter.interface';
+import {ILink} from '../../../../shared/models/links/links.interface';
 import {IndexDBActions} from './indexdb-storage.actions';
 
 export interface IndexDBStateModel {
   isInited: boolean;
   [StorageKeys.Chapters]: IChapter[];
+  [StorageKeys.Links]: ILink[];
+
 }
 
 const getDefaults: () => IndexDBStateModel = () => {
   return {
     isInited: false,
     [StorageKeys.Chapters]: [],
+    [StorageKeys.Links]: [],
   };
 };
 
@@ -45,6 +49,11 @@ export class IndexDBState {
     return state[StorageKeys.Chapters];
   }
 
+  @Selector()
+  public static getLinks(state: IndexDBStateModel): IndexDBStateModel['links'] {
+    return state[StorageKeys.Links];
+  }
+
   @Action(IndexDBActions.SetItem)
   public setItem(
     context: StateContext<IndexDBStateModel>,
@@ -52,7 +61,6 @@ export class IndexDBState {
   ): Observable<void> {
     context.patchState({[key]: value});
     return this.setItemDB(key, value);
-    return undefined$();
   }
 
   @Action(IndexDBActions.Restore)
@@ -66,6 +74,15 @@ export class IndexDBState {
             context.patchState({[StorageKeys.Chapters]: value || []});
             if (!value) {
               console.warn('No data in storage: ', StorageKeys.Chapters);
+            }
+          }),
+        ),
+      this.getItemDB<ILink[]>(StorageKeys.Links)
+        .pipe(
+          tap((value: ILink[] | null) => {
+            context.patchState({[StorageKeys.Links]: value || []});
+            if (!value) {
+              console.warn('No data in storage: ', StorageKeys.Links);
             }
           }),
         ),
