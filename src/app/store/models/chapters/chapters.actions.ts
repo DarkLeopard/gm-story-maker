@@ -35,6 +35,7 @@ export namespace ChaptersActions {
 
     constructor(
       public link: Pick<ILink, 'id' | 'to' | 'from'>,
+      public canBeEmpty: boolean = false,
     ) {}
   }
 }

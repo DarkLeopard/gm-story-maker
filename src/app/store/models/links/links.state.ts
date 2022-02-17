@@ -79,7 +79,7 @@ export class LinksState extends BasicCrud {
     if (!link) return throwError(new Error(`DEV_ERROR: No link with id ${entityId}`));
 
     return super.delete(entityId, context)
-      .pipe(switchMapTo(context.dispatch(new ChaptersActions.DeleteRelation(link))));
+      .pipe(switchMapTo(context.dispatch(new ChaptersActions.DeleteRelation(link, true))));
   }
 
   @Action(LinksActions.Load)

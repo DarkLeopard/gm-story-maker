@@ -5,9 +5,11 @@ import {
   Selector,
   State,
   StateContext,
+  Store,
 } from '@ngxs/store';
 import {
   Observable,
+  tap,
   throwError,
 } from 'rxjs';
 import {deepCopy} from '../../../shared/functions/deep-copy';
@@ -17,6 +19,7 @@ import {IChapter} from '../../../shared/models/chapter/chapter.interface';
 import {ILink} from '../../../shared/models/links/links.interface';
 import {BasicCrud} from '../../shared/basic/basic-crud';
 import {BasicModelStateInterface} from '../../shared/basic/basic-model-state.interface';
+import {LinksActions} from '../links/links.actions';
 import {ModelsNamesEnum} from '../models-names';
 import {ChaptersActions} from './chapters.actions';
 
@@ -67,6 +70,10 @@ export class ChaptersState extends BasicCrud {
     });
   }
 
+  constructor(
+    private store: Store,
+  ) {super();}
+
   @Action(ChaptersActions.Create)
   public createChapter(context: StateContext<ChaptersStateModel>, {entity}: ChaptersActions.Create): Observable<IChapter> {
     return super.create<IChapter>(entity, context);
@@ -79,7 +86,18 @@ export class ChaptersState extends BasicCrud {
 
   @Action(ChaptersActions.Delete)
   public deleteChapter(context: StateContext<ChaptersStateModel>, {entityId}: ChaptersActions.Delete): Observable<void> {
-    return super.delete(entityId, context);
+    const chapter: IChapter | undefined = this.store.selectSnapshot(ChaptersState.getChapter(entityId));
+    if (!!chapter) {
+      return super.delete(entityId, context)
+        .pipe(
+          tap(() => {
+            chapter.relationsIds
+              .forEach((relationId: number) => context.dispatch(new LinksActions.Delete(relationId)))
+          })
+        );
+    } else {
+      return throwError(new Error(`DEV_ERROR: Cant find entity to delete with id ${entityId}`));
+    }
   }
 
   @Action(ChaptersActions.Load)
@@ -119,7 +137,7 @@ export class ChaptersState extends BasicCrud {
   @Action(ChaptersActions.DeleteRelation)
   public deleteRelation(
     context: StateContext<ChaptersStateModel>,
-    {link}: ChaptersActions.DeleteRelation,
+    {link, canBeEmpty}: ChaptersActions.DeleteRelation,
   ): Observable<void> {
     const chapters: IChapter[] = deepCopy(context.getState().entities);
 
@@ -127,8 +145,8 @@ export class ChaptersState extends BasicCrud {
     const chapterTo: IChapter | undefined = chapters.find((chapter: IChapter) => chapter.id === link.to);
 
     const cantFindChapterErrorTxt: string = 'DEV_ERROR: Cant find chapter with id';
-    if (!chapterFrom) return throwError(new Error(`${cantFindChapterErrorTxt} ${link.from}`));
-    if (!chapterTo) return throwError(new Error(`${cantFindChapterErrorTxt} ${link.to}`));
+    if (!chapterFrom && !canBeEmpty) return throwError(new Error(`${cantFindChapterErrorTxt} ${link.from}`));
+    if (!chapterTo && !canBeEmpty) return throwError(new Error(`${cantFindChapterErrorTxt} ${link.to}`));
 
     const relationNotExistsErrorText: (
       chapterId: IChapter['id'], linkId: ILink['id'],
@@ -142,8 +160,12 @@ export class ChaptersState extends BasicCrud {
       return throwError(new Error(relationNotExistsErrorText(chapterTo.id, link.id)));
     }
 
-    chapterFrom.relationsIds = chapterFrom.relationsIds.filter((relationId: ILink['id']) => relationId !== link.id);
-    chapterTo.relationsIds = chapterTo.relationsIds.filter((relationId: ILink['id']) => relationId !== link.id);
+    if (chapterFrom) {
+      chapterFrom.relationsIds = chapterFrom.relationsIds.filter((relationId: ILink['id']) => relationId !== link.id);
+    }
+    if (chapterTo) {
+      chapterTo.relationsIds = chapterTo.relationsIds.filter((relationId: ILink['id']) => relationId !== link.id);
+    }
 
     context.patchState({entities: chapters});
     return undefined$();
