@@ -56,13 +56,18 @@ export class ChapterComponent implements OnInit {
   public formFields: typeof FormFields = FormFields;
   public displayedColumns: string[] = this.getDisptayedColumns();
   public columnsKeysEnum: typeof DisplayedColumnsKeysEnum = DisplayedColumnsKeysEnum;
+
+  public relationsToDataSource$: Observable<IChapter[]> = this.chapterStoreService
+    .linksToByChapterId$(this.chapterId)
+    .pipe(map(this.getChaptersByLink.bind(this)));
+  public relationsFromDataSource$: Observable<IChapter[]> = this.chapterStoreService
+    .linksFromByChapterId$(this.chapterId)
+    .pipe(map(this.getChaptersByLink.bind(this)));
+
   public selectRelation: FormControl = new FormControl(undefined);
-  public chapterLinksTo$: Observable<ILink[]> = this.chapterStoreService.linksToByChapterId$(this.chapterId);
-  public chapterLinksFrom$: Observable<ILink[]> = this.chapterStoreService.linksFromByChapterId$(this.chapterId);
-  public relationsToDataSource$: Observable<IChapter[]> = this.chapterLinksTo$.pipe(map(this.getChaptersByLink.bind(this)));
-  public relationsFromDataSource$: Observable<IChapter[]> = this.chapterLinksFrom$.pipe(map(this.getChaptersByLink.bind(this)));
   private releationSelectOptionsBS: BehaviorSubject<IChapter[]> = new BehaviorSubject<IChapter[]>([]);
   public releationSelectOptions$: Observable<IChapter[]> = this.releationSelectOptionsBS.asObservable();
+
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -71,23 +76,26 @@ export class ChapterComponent implements OnInit {
     private unsubscriber: Unsubscriber,
   ) { }
 
-  public ngOnInit() {
-    const loadedChapter: IChapter | undefined = this.chapterStoreService.getChapter(this.chapterId);
-    if (!loadedChapter) {
-      this.router.navigateByUrl(ChapterRoutingConstants.getFullLink(ChapterRoutingConstants.List));
-    } else {
-      this.chapter.setValue({
-        [FormFields.Id]: loadedChapter.id,
-        [FormFields.Title]: loadedChapter.title,
-        [FormFields.MainTxt]: loadedChapter.mainTxt,
+  public ngOnInit(): void {
+    this.chapterStoreService.getChapter(this.chapterId)
+      .pipe()
+      .subscribe((loadedChapter: IChapter | undefined) => {
+        if (!loadedChapter) {
+          this.router.navigateByUrl(ChapterRoutingConstants.getFullLink(ChapterRoutingConstants.List));
+        } else {
+          this.chapter.setValue({
+            [FormFields.Id]: loadedChapter.id,
+            [FormFields.Title]: loadedChapter.title,
+            [FormFields.MainTxt]: loadedChapter.mainTxt,
+          });
+          this.initRelationsObserver();
+          this.fieldsAutosaver();
+        }
       });
-      this.initRelationsObserver();
-      this.fieldsAutosaver();
-    }
   }
 
   public goToChapter(chapterId: IChapter['id']): void {
-    this.chapterId = chapterId; // TODO check why for
+    this.chapterId = chapterId;
     this.router.navigate([ChapterRoutingConstants.getChapterLink(chapterId)])
       .then(() => this.reloadComponent());
   }

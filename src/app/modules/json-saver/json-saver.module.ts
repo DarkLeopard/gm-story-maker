@@ -10,7 +10,7 @@ import {JsonSaverStorageService} from './services/json-saver-storage.service';
 import {JsonSaverState} from './store/json-saver/json-saver.state';
 
 
-const MAT_NODULES = [
+const MAT_MODULES = [
   MatMenuModule,
   MatIconModule,
   MatButtonModule,
@@ -24,7 +24,7 @@ const MAT_NODULES = [
     CommonModule,
     NgxsModule.forFeature([JsonSaverState]),
     TranslateModule,
-    ...MAT_NODULES,
+    ...MAT_MODULES,
   ],
   exports: [
     JsonSaverComponent,

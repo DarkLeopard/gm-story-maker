@@ -15,6 +15,10 @@ export function createTranslateLoader(http: HttpClient): TranslateHttpLoader {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
 }
 
+const MAT_MODULES = [
+  MatSelectModule,
+];
+
 @NgModule({
   declarations: [
     BasicTranslatePickerComponent,
@@ -29,8 +33,8 @@ export function createTranslateLoader(http: HttpClient): TranslateHttpLoader {
         deps: [HttpClient],
       },
     }),
-    MatSelectModule,
     ReactiveFormsModule,
+    ...MAT_MODULES,
   ],
   exports: [
     BasicTranslatePickerComponent,

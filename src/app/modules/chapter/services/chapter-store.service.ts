@@ -41,8 +41,8 @@ export class ChapterStoreService {
   ) {
   }
 
-  public getChapter(chapterId: IChapter['id']): IChapter | undefined {
-    return this.store.selectSnapshot(ChaptersState.getChapter(chapterId));
+  public getChapter(chapterId: IChapter['id']): Observable<IChapter | undefined> {
+    return this.store.selectOnce(ChaptersState.getChapter(chapterId));
   }
 
   public linksToByChapterId$(chapterId: IChapter['id']): Observable<ILink[]> {
@@ -51,10 +51,6 @@ export class ChapterStoreService {
 
   public linksFromByChapterId$(chapterId: IChapter['id']): Observable<ILink[]> {
     return this.store.select(LinksState.linksFromByChapterId(chapterId));
-  }
-
-  public linksToByChapterId(chapterId: IChapter['id']): ILink[] {
-    return this.store.selectSnapshot(LinksState.linksToByChapterId(chapterId));
   }
 
   public linksFromByChapterId(chapterId: IChapter['id']): ILink[] {
@@ -111,7 +107,7 @@ export class ChapterStoreService {
   public initStorageSaver(): void {
     forkJoin(
       this.store.dispatch(new ChaptersActions.Load(this.store.selectSnapshot(IndexDBState.getChapters))),
-      this.store.dispatch(new LinksActions.Load(this.store.selectSnapshot(IndexDBState.getLinks)))
+      this.store.dispatch(new LinksActions.Load(this.store.selectSnapshot(IndexDBState.getLinks))),
     )
       .subscribe(() => {
         const entities: Observable<any>[] = [
