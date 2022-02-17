@@ -1,19 +1,19 @@
 <mat-card>
   <mat-card-content>
-    <table [dataSource]="dataSource" mat-table style="width: 100%">
+    <table [dataSource]="dataSource" mat-table>
       <ng-container [matColumnDef]="columnsKeysEnum.Id">
-        <th *matHeaderCellDef mat-header-cell style="width: 50px">{{'CHAPTER_LIST_PAGE.ID' | translate}}</th>
-        <td *matCellDef="let element" mat-cell style="width: 50px">{{element.id}}</td>
+        <th *matHeaderCellDef mat-header-cell class="col-50">{{'CHAPTER_LIST_PAGE.ID' | translate}}</th>
+        <td *matCellDef="let element" mat-cell class="col-50">{{element.id}}</td>
       </ng-container>
       <ng-container [matColumnDef]="columnsKeysEnum.Title">
         <th *matHeaderCellDef mat-header-cell>{{'CHAPTER_LIST_PAGE.TITLE' | translate}}</th>
         <td *matCellDef="let element" mat-cell>
-          <span [routerLink]="getChapterLink(element.id)" style="cursor: pointer">{{element.title}}</span>
+          <span [routerLink]="getChapterLink(element.id)" class="span-link">{{element.title}}</span>
         </td>
       </ng-container>
       <ng-container [matColumnDef]="columnsKeysEnum.Actions">
-        <th *matHeaderCellDef mat-header-cell style="width: 50px"></th>
-        <td *matCellDef="let element" mat-cell style="width: 50px">
+        <th *matHeaderCellDef mat-header-cell class="col-50"></th>
+        <td *matCellDef="let element" mat-cell class="col-50">
           <button (click)="deleteChapter(element.id)" color="warn" mat-icon-button>
             <mat-icon>delete</mat-icon>
           </button>

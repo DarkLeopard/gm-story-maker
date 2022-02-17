@@ -6,6 +6,7 @@ import {
 } from '@ngxs/store';
 import {
   filter,
+  forkJoin,
   merge,
   Observable,
   skip,
@@ -79,50 +80,58 @@ export class ChapterStoreService {
     return this.store.select(ChaptersState.findChaptersByTitle(titleString, addFilterFn, max));
   }
 
-  public createChapter(
-    chapter: Omit<IChapter, 'id'> = {
+  public createChapter(): Observable<void> {
+    const chapter: Omit<IChapter, 'id'> = {
       title: this.translateService.instant('CHAPTER_PAGE.CHAPTER'),
       mainTxt: '',
       relationsIds: [],
-    },
-  ): Observable<void> {
+    };
     return this.store.dispatch(new ChaptersActions.Create(chapter));
   }
 
-  public deleteChapter(id: IChapter['id']): Observable<void> {
+  public deleteChapter(id: ChaptersActions.Delete['entityId']): Observable<void> {
     return this.store.dispatch(new ChaptersActions.Delete(id));
   }
 
-  public updateChapter(chapter: IChapter): Observable<void> {
+  public updateChapter(chapter: ChaptersActions.Update['entity']): Observable<void> {
     return this.store.dispatch(new ChaptersActions.Update(chapter));
   }
 
-  public deleteLink(linkId: ILink['id']): Observable<void> {
+  public deleteLink(linkId: LinksActions.Delete['entityId']): Observable<void> {
     return this.store.dispatch(new LinksActions.Delete(linkId));
   }
 
-  public addLink(chapterFromId: IChapter['id'], chapterToId: IChapter['id']): Observable<void> {
+  public addLink(
+    chapterFromId: LinksActions.Create['entity']['from'],
+    chapterToId: LinksActions.Create['entity']['to'],
+  ): Observable<void> {
     return this.store.dispatch(new LinksActions.Create({to: chapterToId, from: chapterFromId}));
   }
 
   public initStorageSaver(): void {
-    const entities: Observable<any>[] = [
-      this.chapters.pipe(
-        skip(1),
-        tap((chapters) => this.store.dispatch(new IndexDBActions.SetItem(StorageKeys.Chapters, chapters))),
-      ),
-      this.links.pipe(
-        skip(1),
-        tap((links: ILink[]) => this.store.dispatch(new IndexDBActions.SetItem(StorageKeys.Links, links))),
-      ),
-    ];
+    forkJoin(
+      this.store.dispatch(new ChaptersActions.Load(this.store.selectSnapshot(IndexDBState.getChapters))),
+      this.store.dispatch(new LinksActions.Load(this.store.selectSnapshot(IndexDBState.getLinks)))
+    )
+      .subscribe(() => {
+        const entities: Observable<any>[] = [
+          this.chapters.pipe(
+            skip(1),
+            tap((chapters) => this.store.dispatch(new IndexDBActions.SetItem(StorageKeys.Chapters, chapters))),
+          ),
+          this.links.pipe(
+            skip(1),
+            tap((links: ILink[]) => this.store.dispatch(new IndexDBActions.SetItem(StorageKeys.Links, links))),
+          ),
+        ];
 
-    this.isIndexDBInited
-      .pipe(
-        filter((v: boolean) => v),
-        switchMapTo(merge(...entities)),
-      )
-      .subscribe();
+        this.isIndexDBInited
+          .pipe(
+            filter((v: boolean) => v),
+            switchMapTo(merge(...entities)),
+          )
+          .subscribe();
+      });
   }
 
 }

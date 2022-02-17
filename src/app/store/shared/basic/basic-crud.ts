@@ -46,7 +46,7 @@ export class BasicCrud {
       }
     } else {
       for (const key in entity) {
-        if (key !== 'id') {
+        if (key !== 'id' && newEntity[key] !== undefined) {
           entity[key] = newEntity[key];
         }
       }

@@ -79,7 +79,6 @@ export class ChapterComponent implements OnInit {
       this.chapter.setValue({
         [FormFields.Id]: loadedChapter.id,
         [FormFields.Title]: loadedChapter.title,
-        [FormFields.RelationsIds]: loadedChapter.relationsIds,
         [FormFields.MainTxt]: loadedChapter.mainTxt,
       });
       this.initRelationsObserver();
@@ -93,8 +92,8 @@ export class ChapterComponent implements OnInit {
       .then(() => this.reloadComponent());
   }
 
-  public createLink(id: IChapter['id']): void {
-    this.chapterStoreService.addLink(this.chapterId, id)
+  public createLink(chapterId: IChapter['id']): void {
+    this.chapterStoreService.addLink(this.chapterId, chapterId)
       .subscribe(() => this.reloadComponent());
 
   }
@@ -120,7 +119,11 @@ export class ChapterComponent implements OnInit {
   }
 
   public save(): void {
-    this.chapterStoreService.updateChapter(this.chapter.getRawValue()).subscribe();
+    this.chapterStoreService.updateChapter({
+      id: this.chapter.get(FormFields.Id)?.value,
+      title: this.chapter.get(FormFields.Title)?.value,
+      mainTxt: this.chapter.get(FormFields.MainTxt)?.value,
+    }).subscribe();
   }
 
   public hasRelations(chapters: IChapter[] | null): boolean {
@@ -139,7 +142,6 @@ export class ChapterComponent implements OnInit {
     return new FormGroup({
       [FormFields.Id]: new FormControl(undefined),
       [FormFields.Title]: new FormControl(undefined),
-      [FormFields.RelationsIds]: new FormControl([]),
       [FormFields.MainTxt]: new FormControl(undefined),
     });
   }
@@ -147,7 +149,7 @@ export class ChapterComponent implements OnInit {
   private getChaptersByLink(links: ILink[]): IChapter[] {
     return links
       .reduce((acc: IChapter[], link: ILink) => [...acc, ...this.chapterStoreService.getChaptersByLinkId(link)], [])
-      .filter((chapter) => chapter.id !== this.chapterId);
+      .filter((chapter: IChapter) => chapter.id !== this.chapterId);
   }
 
   private fieldsAutosaver(): void {

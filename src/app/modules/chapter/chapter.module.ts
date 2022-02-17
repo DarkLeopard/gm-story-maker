@@ -9,11 +9,6 @@ import {MatIconModule} from '@angular/material/icon';
 import {MatInputModule} from '@angular/material/input';
 import {MatTableModule} from '@angular/material/table';
 import {TranslateModule} from '@ngx-translate/core';
-import {Store} from '@ngxs/store';
-import {forkJoin} from 'rxjs';
-import {IndexDBState} from '../../store/database/states/indexdb/indexdb-storage.state';
-import {ChaptersActions} from '../../store/models/chapters/chapters.actions';
-import {LinksActions} from '../../store/models/links/links.actions';
 import {ChapterRoutingModule} from './chapter-routing.module';
 import {ChapterListComponent} from './components/chapter-list/chapter-list.component';
 import {ChapterComponent} from './components/chapter/chapter.component';
@@ -44,15 +39,8 @@ const MAT_MODULES = [
 })
 export class ChapterModule {
   constructor(
-    private store: Store,
     private chapterStoreService: ChapterStoreService,
   ) {
-    forkJoin(
-      this.store.dispatch(new ChaptersActions.Load(this.store.selectSnapshot(IndexDBState.getChapters))),
-      this.store.dispatch(new LinksActions.Load(this.store.selectSnapshot(IndexDBState.getLinks)))
-    )
-      .subscribe(() => {
-        this.chapterStoreService.initStorageSaver();
-      });
+    this.chapterStoreService.initStorageSaver();
   }
 }

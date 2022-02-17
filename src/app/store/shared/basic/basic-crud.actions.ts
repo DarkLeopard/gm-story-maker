@@ -15,7 +15,7 @@ export namespace BasicCrudActions {
     static readonly type: string = `${PLACEHOLDER}`;
 
     constructor(
-      public entity: Pick<T, 'id'> & Partial<Omit<T, 'id'>>,
+      public entity: Pick<T, 'id'> & Partial<T>,
     ) {}
   }
 

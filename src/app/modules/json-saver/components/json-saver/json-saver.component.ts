@@ -2,7 +2,7 @@ import {
   ChangeDetectionStrategy,
   Component,
 } from '@angular/core';
-import {JsonLoaderService} from '../../services/json-loader.service';
+import {JsonSaverStorageService} from '../../services/json-saver-storage.service';
 
 @Component({
   selector: 'app-json-saver',
@@ -13,21 +13,21 @@ import {JsonLoaderService} from '../../services/json-loader.service';
 export class JsonSaverComponent {
 
   constructor(
-    private jsonLoaderService: JsonLoaderService,
+    private jsonSaverStorageService: JsonSaverStorageService,
   ) { }
 
   public load(event: Event): void {
     const file: File | null | undefined = ((event.target as any)?.files as FileList).item(0);
 
     if (file) {
-      this.jsonLoaderService.load(file);
+      this.jsonSaverStorageService.load(file);
     } else {
       console.error('DEV_ERROR: No file');
     }
   }
 
   public save(): void {
-    this.jsonLoaderService.save();
+    this.jsonSaverStorageService.save();
   }
 
 }

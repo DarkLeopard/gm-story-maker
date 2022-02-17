@@ -6,10 +6,15 @@ import {MatMenuModule} from '@angular/material/menu';
 import {TranslateModule} from '@ngx-translate/core';
 import {NgxsModule} from '@ngxs/store';
 import {JsonSaverComponent} from './components/json-saver/json-saver.component';
-import {JsonLoaderService} from './services/json-loader.service';
 import {JsonSaverStorageService} from './services/json-saver-storage.service';
 import {JsonSaverState} from './store/json-saver/json-saver.state';
 
+
+const MAT_NODULES = [
+  MatMenuModule,
+  MatIconModule,
+  MatButtonModule,
+];
 
 @NgModule({
   declarations: [
@@ -17,17 +22,14 @@ import {JsonSaverState} from './store/json-saver/json-saver.state';
   ],
   imports: [
     CommonModule,
-    MatMenuModule,
-    MatIconModule,
-    MatButtonModule,
     NgxsModule.forFeature([JsonSaverState]),
     TranslateModule,
+    ...MAT_NODULES,
   ],
   exports: [
     JsonSaverComponent,
   ],
   providers: [
-    JsonLoaderService,
     JsonSaverStorageService,
   ],
 })

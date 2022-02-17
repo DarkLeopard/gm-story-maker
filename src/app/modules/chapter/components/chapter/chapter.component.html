@@ -30,25 +30,25 @@
     </mat-form-field>
   </mat-card-actions>
 </mat-card>
-<mat-card style="margin: 20px 0" *ngIf="hasRelations(relationsFromDataSource$ | async)">
+<mat-card *ngIf="hasRelations(relationsFromDataSource$ | async)">
   <mat-card-header>
     <mat-card-title [innerHTML]="'CHAPTER_PAGE.RELATIONS_FROM' | translate"></mat-card-title>
   </mat-card-header>
   <mat-card-content>
-    <table [dataSource]="relationsFromDataSource$" mat-table style="width: 100%">
+    <table [dataSource]="relationsFromDataSource$" mat-table>
       <ng-container [matColumnDef]="columnsKeysEnum.Id">
-        <th *matHeaderCellDef mat-header-cell style="width: 50px">{{'CHAPTER_PAGE.ID' | translate}}</th>
-        <td *matCellDef="let element" mat-cell style="width: 50px">{{element.id}}</td>
+        <th *matHeaderCellDef mat-header-cell class="col-50">{{'CHAPTER_PAGE.ID' | translate}}</th>
+        <td *matCellDef="let element" mat-cell class="col-50">{{element.id}}</td>
       </ng-container>
       <ng-container [matColumnDef]="columnsKeysEnum.Title">
         <th *matHeaderCellDef mat-header-cell>{{'CHAPTER_PAGE.TITLE' | translate}}</th>
         <td *matCellDef="let element" mat-cell>
-          <span (click)="goToChapter(element.id)" style="cursor: pointer">{{element.title}}</span>
+          <span (click)="goToChapter(element.id)" class="span-link">{{element.title}}</span>
         </td>
       </ng-container>
       <ng-container [matColumnDef]="columnsKeysEnum.Actions">
-        <th *matHeaderCellDef mat-header-cell style="width: 50px"></th>
-        <td *matCellDef="let element" mat-cell style="width: 50px">
+        <th *matHeaderCellDef mat-header-cell class="col-50"></th>
+        <td *matCellDef="let element" mat-cell class="col-50">
           <button (click)="deleteLinkFrom(element)" color="warn" mat-icon-button>
             <mat-icon>delete</mat-icon>
           </button>
@@ -59,25 +59,25 @@
     </table>
   </mat-card-content>
 </mat-card>
-<mat-card style="margin: 20px 0" *ngIf="hasRelations(relationsToDataSource$ | async)">
+<mat-card *ngIf="hasRelations(relationsToDataSource$ | async)">
   <mat-card-header>
     <mat-card-title [innerHTML]="'CHAPTER_PAGE.RELATIONS_TO' | translate"></mat-card-title>
   </mat-card-header>
   <mat-card-content>
-    <table [dataSource]="relationsToDataSource$" mat-table style="width: 100%">
+    <table [dataSource]="relationsToDataSource$" mat-table>
       <ng-container [matColumnDef]="columnsKeysEnum.Id">
-        <th *matHeaderCellDef mat-header-cell style="width: 50px">{{'CHAPTER_PAGE.ID' | translate}}</th>
-        <td *matCellDef="let element" mat-cell style="width: 50px">{{element.id}}</td>
+        <th *matHeaderCellDef mat-header-cell class="col-50">{{'CHAPTER_PAGE.ID' | translate}}</th>
+        <td *matCellDef="let element" mat-cell class="col-50">{{element.id}}</td>
       </ng-container>
       <ng-container [matColumnDef]="columnsKeysEnum.Title">
         <th *matHeaderCellDef mat-header-cell>{{'CHAPTER_PAGE.TITLE' | translate}}</th>
         <td *matCellDef="let element" mat-cell>
-          <span (click)="goToChapter(element)" style="cursor: pointer">{{element.title}}</span>
+          <span (click)="goToChapter(element.id)" class="span-link">{{element.title}}</span>
         </td>
       </ng-container>
       <ng-container [matColumnDef]="columnsKeysEnum.Actions">
-        <th *matHeaderCellDef mat-header-cell style="width: 50px"></th>
-        <td *matCellDef="let element" mat-cell style="width: 50px">
+        <th *matHeaderCellDef mat-header-cell class="col-50"></th>
+        <td *matCellDef="let element" mat-cell class="col-50">
           <button (click)="deleteLinkTo(element)" color="warn" mat-icon-button>
             <mat-icon>delete</mat-icon>
           </button>
