@@ -9,7 +9,8 @@
     "test": "ng test"
   },
   "bugs": {
-    "email": "darkleopard3@ya.ru"
+    "email": "darkleopard3@ya.ru",
+    "url": "https://github.com/DarkLeopard/gm-story-maker/issues"
   },
   "author": {
     "email": "darkleopard3@ya.ru",
