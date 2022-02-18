@@ -1,6 +1,6 @@
 {
   "name": "gm-story-maker",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -8,6 +8,19 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
   },
+  "bugs": {
+    "email": "darkleopard3@ya.ru"
+  },
+  "author": {
+    "email": "darkleopard3@ya.ru",
+    "name": "Barabanov Sergey Konstantinovich"
+  },
+  "description": "Assistant program for GM. In the original functionality, it is possible to create related stories, save them in the browser and files on the device.",
+  "homepage": "4leo.ru",
+  "repository": {
+    "url": "https://github.com/DarkLeopard/gm-story-maker"
+  },
+  "license": "MIT",
   "private": true,
   "dependencies": {
     "@angular/animations": "~13.2.0",
