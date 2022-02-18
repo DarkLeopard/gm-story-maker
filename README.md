@@ -1,5 +1,7 @@
 # GmStoryMaker
 
+Assistant program for GM. In the original functionality, it is possible to create related stories, save them in the browser and files on the device.
+
 # Already added
 * add chapters (story place)
 * add links between chapters
