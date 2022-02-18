@@ -1,5 +1,23 @@
 # GmStoryMaker
 
+# Already added
+* add chapters (story place)
+* add links between chapters
+* autosave to indexDB
+* manual save data to JSON on device
+
+# Future features
+* add app configuration state
+* add more themes
+* add editor (TinyMCE?) to chapter main text
+* save images to indexDB
+* save data manualy (as JSON) to online base
+* add links types
+* add chapters types
+* add master calendar
+* autosave data to google firebase as custom provider
+* add auth and stand installation
+
 # Errors
 
 > An unhandled exception occurred: NOT SUPPORTED: keyword "id", use "$id" for schema ID #157
